@@ -47,17 +47,17 @@ export const Navbar = () => {
 
           <IconButton>
             <SearchOutlined />
-
-            <NextLink href="/cart" passHref legacyBehavior>
-              <Link>
-                <IconButton>
-                  <Badge badgeContent={2} color="secondary">
-                    <ShoppingCartOutlined />
-                  </Badge>
-                </IconButton>
-              </Link>
-            </NextLink>
           </IconButton>
+
+          <NextLink href="/cart" passHref legacyBehavior>
+            <Link>
+              <IconButton>
+                <Badge badgeContent={2} color="secondary">
+                  <ShoppingCartOutlined />
+                </Badge>
+              </IconButton>
+            </Link>
+          </NextLink>
 
           <Button>Menú</Button>
         </Toolbar>
