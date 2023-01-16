@@ -1,4 +1,5 @@
 import { FC, useMemo, useState } from 'react';
+import NextLink from 'next/link';
 
 import {
   Grid,
@@ -7,6 +8,7 @@ import {
   CardMedia,
   Box,
   Typography,
+  Link,
 } from '@mui/material';
 import { IProduct } from '../../interfaces';
 
@@ -32,16 +34,21 @@ export const ProductCard: FC<Props> = ({ product }) => {
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
-      <Card>
-        <CardActionArea>
-          <CardMedia
-            component="img"
-            image={productImage}
-            alt={product.title}
-            className="fadeIn"
-          />
-        </CardActionArea>
-      </Card>
+      {/* El prefetch es para que no cargue los 50 productos en memoria */}
+      <NextLink href="/product/slug" passHref legacyBehavior prefetch={false}>
+        <Link>
+          <Card>
+            <CardActionArea>
+              <CardMedia
+                component="img"
+                image={productImage}
+                alt={product.title}
+                className="fadeIn"
+              />
+            </CardActionArea>
+          </Card>
+        </Link>
+      </NextLink>
 
       <Box sx={{ mt: 1 }} className="fadeIn">
         <Typography fontWeight={700}>{product.title}</Typography>
