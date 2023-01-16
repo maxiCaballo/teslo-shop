@@ -24,8 +24,8 @@ const HomePage: NextPage = () => {
           All products
         </Typography>
 
-        <ProductList products={initialData as any} />
         {/* momentaneo */}
+        <ProductList products={initialData as any} />
       </>
     </ShopLayout>
   );
