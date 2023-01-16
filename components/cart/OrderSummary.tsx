@@ -28,7 +28,7 @@ export const OrderSummary = () => {
       <Grid item xs={6} sx={{ mt: 2 }}>
         <Typography variant="subtitle1">Total</Typography>
       </Grid>
-      <Grid item xs={6} display="flex" justifyContent="end">
+      <Grid item xs={6} display="flex" justifyContent="end" sx={{ mt: 2 }}>
         <Typography variant="subtitle1">$ 186.34</Typography>
       </Grid>
     </Grid>

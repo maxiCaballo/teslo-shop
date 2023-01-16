@@ -1,24 +1,46 @@
-import { CartList, OrderSummary } from '../../components/cart';
 import NextLink from 'next/link';
+import { CartList, OrderSummary } from '@/components/cart';
+import { ShopLayout } from '@/components/layouts';
 import {
   Box,
   Button,
   Card,
   CardContent,
+  Chip,
   Divider,
   Grid,
-  Typography,
   Link,
+  Typography,
 } from '@mui/material';
-import { ShopLayout } from '../../components/layouts/ShopLayout';
+import {
+  CreditCardOffOutlined,
+  CreditScoreOutlined,
+} from '@mui/icons-material';
 
-const CheckoutSummaryPage = () => {
+const OrderPage = () => {
   return (
-    <ShopLayout title="Summary order page" pageDescription="Resume order page">
+    <ShopLayout title="Order page" pageDescription="Resume order page">
       <>
         <Typography variant="h1" component="h1" sx={{ mb: 2 }}>
-          Summary order
+          Order: ABC123
         </Typography>
+
+        {/* Si no esta paga */}
+        {/* <Chip
+          sx={{ my: 2 }}
+          label="Pending payment"
+          variant="outlined"
+          color="error"
+          icon={<CreditCardOffOutlined />}
+        /> */}
+        {/* Si esta paga */}
+        <Chip
+          sx={{ my: 2 }}
+          label="Paid"
+          variant="outlined"
+          color="success"
+          icon={<CreditScoreOutlined />}
+        />
 
         <Grid container spacing={1}>
           <Grid item xs={12} sm={7}>
@@ -79,9 +101,15 @@ const CheckoutSummaryPage = () => {
                 <OrderSummary />
 
                 <Box sx={{ mt: 3 }}>
-                  <Button color="secondary" className="circular-btn" fullWidth>
-                    Confirm
-                  </Button>
+                  {/*TODO */}
+                  <h2>Pay</h2>
+                  <Chip
+                    sx={{ my: 2 }}
+                    label="Pending payment"
+                    variant="outlined"
+                    color="error"
+                    icon={<CreditCardOffOutlined />}
+                  />
                 </Box>
               </CardContent>
             </Card>
@@ -92,4 +120,4 @@ const CheckoutSummaryPage = () => {
   );
 };
 
-export default CheckoutSummaryPage;
+export default OrderPage;

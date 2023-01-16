@@ -15,7 +15,7 @@ const CartPage = () => {
   return (
     <ShopLayout title="cart page - (3)" pageDescription="Cart page">
       <>
-        <Typography variant="h1" component="h1">
+        <Typography variant="h1" component="h1" sx={{ mb: 2 }}>
           Cart
         </Typography>
 
