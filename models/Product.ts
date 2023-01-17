@@ -39,7 +39,8 @@ const productSchema = new Schema(
   }
 );
 
-//TODO: Crear Índice de mongo para buscar rapidamente.
+//* Índice de texto en las propiedades title y tags para buscar rapidamente.
+productSchema.index({ title: 'text', tags: 'text' });
 
 // Si el modelo ya esta creado lo voy a obtener del models.Entry
 // sinó creo la instancia pasandole el nombre 'Entry' y el entrySchema.
