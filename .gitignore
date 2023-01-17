@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+#Excluye la carpeta de mongo
+mongo/
+
 # dependencies
 /node_modules
 /.pnp
