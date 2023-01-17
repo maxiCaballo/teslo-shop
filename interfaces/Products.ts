@@ -1,3 +1,4 @@
+//La interfaz lleva todas las propiedades que van a estar en la bd de mongo
 export interface IProduct {
   _id: string;
   description: string;
@@ -10,8 +11,8 @@ export interface IProduct {
   title: string;
   type: ITypes;
   gender: IGender;
-
-  //TODO: Crear createdAt y updatedAt
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type ISize = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
