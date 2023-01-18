@@ -8,12 +8,9 @@ interface Props {
 }
 
 export const ProductList: FC<Props> = ({ products }) => {
-  const { products: p } = products;
-  console.log(p);
-
   return (
     <Grid container spacing={4}>
-      {p.map((product) => (
+      {products.map((product) => (
         <ProductCard key={product.slug} product={product} />
       ))}
     </Grid>

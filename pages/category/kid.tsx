@@ -1,27 +1,25 @@
-import { NextPage } from 'next';
-
-import { FullScreenSpinner } from '../components/ui';
-import { ShopLayout } from '../components/layouts';
-import { Typography } from '@mui/material';
+import { ShopLayout } from '@/components/layouts';
 import { ProductList } from '@/components/products';
+import { FullScreenSpinner } from '@/components/ui';
 import { useProducts } from '@/hooks';
+import { Typography } from '@mui/material';
 
-const HomePage: NextPage = () => {
-  const { products, isLoading, error } = useProducts('/products');
+const KidPage = () => {
+  const { products, isLoading, error } = useProducts('/products?gender=kid');
 
   if (error) return <h1>Error</h1>;
 
   return (
     <ShopLayout
-      title={'Teslo-Shop - Home'}
-      pageDescription={'Find the best products on tesloshop'}
+      title={'Teslo-Shop - Kids page'}
+      pageDescription={'Find the best products for your kids on tesloshops'}
     >
       <>
         <Typography variant="h1" component="h1">
-          Shop
+          Kids
         </Typography>
         <Typography variant="h2" sx={{ mb: 1 }} component="h1">
-          All products:
+          Products:
         </Typography>
 
         {isLoading ? (
@@ -34,4 +32,4 @@ const HomePage: NextPage = () => {
   );
 };
 
-export default HomePage;
+export default KidPage;

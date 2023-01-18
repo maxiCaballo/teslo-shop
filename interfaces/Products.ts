@@ -14,6 +14,13 @@ export interface IProduct {
   createdAt: string;
   updatedAt: string;
 }
+export interface IProductHome {
+  images: string[];
+  inStock: number;
+  price: number;
+  slug: string;
+  title: string;
+}
 
 export type ISize = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
 export type ITypes = 'shirts' | 'pants' | 'hoodies' | 'hats';
