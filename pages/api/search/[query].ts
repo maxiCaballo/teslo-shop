@@ -36,13 +36,13 @@ const getProductsByTitleOrTags = async (
 
   try {
     //*Manera optima utilizando los indices de texto de mongoDb
-    db.connect();
+    await db.connect();
     const products = await Product.find({
       $text: { $search: query },
     })
       .select('title images price inStock slug -_id')
       .lean();
-    db.disconnect();
+    await db.disconnect();
 
     if (!products)
       return res
@@ -56,12 +56,12 @@ const getProductsByTitleOrTags = async (
   }
 
   //*Así lo había hecho yo y funcionaba
-  // db.connect();
+  // await db.connect();
   //   const products = await Product.find({
   //     $or: [
   //       { tags: { $in: query } },
   //       { title: { $regex: `${query}`, $options: 'i' } },
   //     ],
   //   }).lean();
-  //db.disconnect();
+  //await db.disconnect();
 };

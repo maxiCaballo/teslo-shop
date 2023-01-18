@@ -35,7 +35,12 @@ export const ProductCard: FC<Props> = ({ product }) => {
       onMouseLeave={() => setIsHover(false)}
     >
       {/* El prefetch es para que no cargue los 50 productos en memoria */}
-      <NextLink href="/product/slug" passHref legacyBehavior prefetch={false}>
+      <NextLink
+        href={`/product/${product.slug}`}
+        passHref
+        legacyBehavior
+        prefetch={false}
+      >
         <Link>
           <Card>
             <CardActionArea>

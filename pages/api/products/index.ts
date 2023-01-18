@@ -32,12 +32,12 @@ export const getProducts = async (
     condition = { gender };
 
   try {
-    await db.connect();
+    await await db.connect();
     const products = await Product.find(condition)
       //Me selecciona solo esos campos menos el id que lleva un - porque lo está restando
       .select('images inStock price slug title -_id')
       .lean();
-    await db.disconnect();
+    await await db.disconnect();
 
     if (!products)
       return res.status(400).json({ message: 'There are no products' });

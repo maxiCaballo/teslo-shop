@@ -26,9 +26,9 @@ const getProductBySlug = async (
   const { slug } = req.query;
 
   try {
-    db.connect();
+    await db.connect();
     const product = await Product.findOne({ slug }).lean();
-    db.disconnect();
+    await db.disconnect();
 
     if (!product)
       return res

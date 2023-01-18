@@ -14,12 +14,12 @@ export default async function handler(
     });
   }
 
-  await db.connect();
+  await await db.connect();
 
   await Product.deleteMany();
   await Product.insertMany(productSeed.initialData.products);
 
-  await db.disconnect();
+  await await db.disconnect();
 
   res.status(200).json({ message: 'Products populate in DB successfully' });
 }

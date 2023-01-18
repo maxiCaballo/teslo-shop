@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { useRouter } from 'next/router';
 import { UiContext } from '@/context';
 import {
   Box,
@@ -31,54 +32,69 @@ const userPanelListItem = [
     icon: <AccountCircleOutlined />,
     name: 'Perfil',
     navbarItem: false,
+    pathname: '/404',
   },
   {
     icon: <ConfirmationNumberOutlined />,
     name: 'My Orders',
     navbarItem: false,
+    pathname: '/order/history',
   },
   {
     icon: <MaleOutlined />,
     name: 'Mens',
     navbarItem: true,
+    pathname: '/category/men',
   },
   {
     icon: <FemaleOutlined />,
     name: 'Womens',
     navbarItem: true,
+    pathname: '/category/women',
   },
   {
     icon: <EscalatorWarningOutlined />,
     name: 'Kids',
     navbarItem: true,
+    pathname: '/category/kid',
   },
   {
     icon: <VpnKeyOutlined />,
     name: 'Login',
+    pathname: '/auth/login',
   },
   {
     icon: <LoginOutlined />,
     name: 'Logout',
+    pathname: '/auth/register',
   },
 ];
 const adminPanelListItem = [
   {
     icon: <CategoryOutlined />,
     name: 'Products',
+    pathname: '/404',
   },
   {
     icon: <ConfirmationNumberOutlined />,
     name: 'Orders',
+    pathname: '/404',
   },
   {
     icon: <AdminPanelSettings />,
     name: 'Users',
+    pathname: '/404',
   },
 ];
 
 export const SideMenu = () => {
   const { isSidebarOpen, toogleMenu } = useContext(UiContext);
-  console.log(isSidebarOpen);
+  const router = useRouter();
+
+  const navigateTo = (url: string) => {
+    toogleMenu();
+    router.push(url);
+  };
 
   return (
     <Drawer
@@ -105,7 +121,11 @@ export const SideMenu = () => {
           {userPanelListItem.map((item) => (
             <ListItem
               key={item.name}
-              sx={item.navbarItem ? { display: { xs: '', sm: 'none' } } : null}
+              sx={{
+                cursor: 'pointer',
+                display: item.navbarItem ? { xs: '', sm: 'none' } : null,
+              }}
+              onClick={() => navigateTo(item.pathname)}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.name} />
@@ -117,7 +137,11 @@ export const SideMenu = () => {
           <ListSubheader>Admin Panel</ListSubheader>
 
           {adminPanelListItem.map((item) => (
-            <ListItem key={item.name}>
+            <ListItem
+              key={item.name}
+              sx={{ cursor: 'pointer' }}
+              onClick={() => navigateTo(item.pathname)}
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.name} />
             </ListItem>
