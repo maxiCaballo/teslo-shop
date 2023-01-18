@@ -1,3 +1,5 @@
+import { useContext } from 'react';
+import { UiContext } from '@/context';
 import {
   Box,
   Divider,
@@ -75,9 +77,13 @@ const adminPanelListItem = [
 ];
 
 export const SideMenu = () => {
+  const { isSidebarOpen, toogleMenu } = useContext(UiContext);
+  console.log(isSidebarOpen);
+
   return (
     <Drawer
-      open={false}
+      open={isSidebarOpen}
+      onClose={toogleMenu}
       anchor="right"
       sx={{ backdropFilter: 'blur(4px)', transition: 'all 0.5s ease-out' }}
     >
