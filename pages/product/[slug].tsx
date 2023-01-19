@@ -67,29 +67,9 @@ const ProductPage: NextPage<Props> = ({ product }) => {
   );
 };
 
-//* SSR
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-//   const { slug } = ctx.params as { slug: string };
-//   const product = await dbProducts.getProductBySlug(slug);
-
-//   if (!product)
-//     return {
-//       redirect: {
-//         destination: '/404',
-//         permanent: false,
-//       },
-//     };
-
-//   return {
-//     props: {
-//       product,
-//     },
-//   };
-// };
-
 //* SSG
 export const getStaticPaths: GetStaticPaths = async () => {
-  const slugs = await dbProducts.getAllProductsBySlugs();
+  const slugs = await dbProducts.getAllProductsWithSlug();
 
   return {
     paths: slugs.map(({ slug }) => ({
@@ -121,6 +101,26 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   };
 };
 
+//* SSR
+// export const getServerSideProps: GetServerSideProps = async (ctx) => {
+//   const { slug } = ctx.params as { slug: string };
+//   const product = await dbProducts.getProductBySlug(slug);
+
+//   if (!product)
+//     return {
+//       redirect: {
+//         destination: '/404',
+//         permanent: false,
+//       },
+//     };
+
+//   return {
+//     props: {
+//       product,
+//     },
+//   };
+// };
+
 export default ProductPage;
 
 //* CSR (client side rendering):
@@ -138,3 +138,4 @@ export default ProductPage;
 // y los bots de google la pueden indexar de manera correcta.
 
 //* SSG (static side generation)
+//TODO: explicar que es y averiguar bien como funciona el ISG

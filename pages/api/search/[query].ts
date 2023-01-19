@@ -35,7 +35,8 @@ const getProductsByTitleOrTags = async (
   query = query.toString();
 
   try {
-    //*Manera optima utilizando los indices de texto de mongoDb
+    //*Manera optima utilizando los indices de texto de mongoDb,
+    //*busca en las props tags y title porque asi lo definí en el modelo.
     await db.connect();
     const products = await Product.find({
       $text: { $search: query },

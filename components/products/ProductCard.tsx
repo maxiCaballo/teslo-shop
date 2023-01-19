@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import NextLink from 'next/link';
 
 import {
@@ -57,7 +57,10 @@ export const ProductCard: FC<Props> = ({ product }) => {
       </NextLink>
 
       <Box
-        sx={{ mt: 1, display: isImageLoaded ? 'block' : 'none' }}
+        sx={{
+          mt: 1,
+          display: isImageLoaded ? 'block' : 'none',
+        }}
         className="fadeIn"
       >
         <Typography fontWeight={700}>{product.title}</Typography>

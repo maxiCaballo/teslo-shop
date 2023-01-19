@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import { UiContext } from '@/context';
 import {
@@ -89,11 +89,18 @@ const adminPanelListItem = [
 
 export const SideMenu = () => {
   const { isSidebarOpen, toogleMenu } = useContext(UiContext);
+  const [search, setSearch] = useState('');
+
   const router = useRouter();
 
   const navigateTo = (url: string) => {
     toogleMenu();
     router.push(url);
+  };
+
+  const onSearch = () => {
+    if (search.trim().length === 0) return;
+    navigateTo(`/search/${search}`);
   };
 
   return (
@@ -107,11 +114,14 @@ export const SideMenu = () => {
         <List>
           <ListItem>
             <Input
+              value={search}
               type="text"
               placeholder="Search..."
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => (e.key === 'Enter' ? onSearch() : null)}
               endAdornment={
                 <InputAdornment position="end">
-                  <IconButton aria-label="toggle password visibility">
+                  <IconButton onClick={onSearch}>
                     <SearchOutlined />
                   </IconButton>
                 </InputAdornment>
