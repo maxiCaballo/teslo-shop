@@ -138,4 +138,7 @@ export default ProductPage;
 // y los bots de google la pueden indexar de manera correcta.
 
 //* SSG (static side generation)
-//TODO: explicar que es y averiguar bien como funciona el ISG
+// El SSG es la tecnica recomendada por next que debemos usar siempre que podamos, ya que es la forma mas rapida
+// que tiene el sv de responder una request. Se utiliza cuando sabemos que la info de esa page no va a cambiar con el tiempo
+// y en tiempo de build genera toda la info para almacenar la page en el fileSystem y cuando se haga la request entrege el archivo
+// html, js y css ya preprocesados.
