@@ -1,4 +1,4 @@
-import { FC, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import NextLink from 'next/link';
 
 import {
@@ -9,6 +9,7 @@ import {
   Box,
   Typography,
   Link,
+  Chip,
 } from '@mui/material';
 import { IProductHome } from '../../interfaces';
 
@@ -34,16 +35,29 @@ export const ProductCard: FC<Props> = ({ product }) => {
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
-      {/* El prefetch es para que no cargue los 50 productos en memoria */}
-      <NextLink
-        href={`/product/${product.slug}`}
-        passHref
-        legacyBehavior
-        prefetch={false}
-      >
-        <Link>
-          <Card>
+      <Card>
+        {/* El prefetch es para que no cargue los 50 productos en memoria */}
+        <NextLink
+          href={`/product/${product.slug}`}
+          passHref
+          legacyBehavior
+          prefetch={false}
+        >
+          <Link>
             <CardActionArea>
+              {product.inStock === 0 && (
+                <Chip
+                  color="primary"
+                  label="not available"
+                  sx={{
+                    position: 'absolute',
+                    zIndex: 99,
+                    top: '10px',
+                    left: '10px',
+                  }}
+                />
+              )}
+
               <CardMedia
                 component="img"
                 image={productImage}
@@ -52,9 +66,9 @@ export const ProductCard: FC<Props> = ({ product }) => {
                 onLoad={() => setIsImageLoaded(true)}
               />
             </CardActionArea>
-          </Card>
-        </Link>
-      </NextLink>
+          </Link>
+        </NextLink>
+      </Card>
 
       <Box
         sx={{
