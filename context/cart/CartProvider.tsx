@@ -18,7 +18,19 @@ const CART_INITIAL_STATE: CartState = {
 export const CartProvider: FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, CART_INITIAL_STATE);
 
+  const addProduct = (payload: ICartProduct) => {
+    dispatch({ type: 'Add', payload });
+  };
+
   return (
-    <CartContext.Provider value={{ ...state }}>{children}</CartContext.Provider>
+    <CartContext.Provider
+      value={{
+        ...state,
+        //Methods
+        addProduct,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
   );
 };

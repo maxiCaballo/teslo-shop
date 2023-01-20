@@ -1,16 +1,18 @@
+import { useContext, useState } from 'react';
 import {
   GetServerSideProps,
   GetStaticPaths,
   GetStaticProps,
   NextPage,
 } from 'next';
+import { useRouter } from 'next/router';
 
-import { ShopLayout } from '../../components/layouts/ShopLayout';
-import { ProductSlideShow } from '@/components/products/ProductSlideShow';
+import { CartContext } from '../../context/cart/CartContext';
 import { Box, Button, Grid, Typography, Chip } from '@mui/material';
+import { ShopLayout } from '../../components/layouts';
 import { ItemCounter } from '@/components/ui';
-import { SizeSelector } from '@/components/products';
-import { IProduct } from '../../interfaces/Products';
+import { SizeSelector, ProductSlideShow } from '@/components/products';
+import { IProduct, ICartProduct, ISize } from '../../interfaces';
 import { dbProducts } from '@/database';
 
 type Props = {
@@ -18,6 +20,45 @@ type Props = {
 };
 
 const ProductPage: NextPage<Props> = ({ product }) => {
+  const [tempProductCart, setTempProductCart] = useState<ICartProduct>({
+    _id: product._id,
+    images: product.images[0],
+    price: product.price,
+    size: undefined,
+    slug: product.slug,
+    title: product.title,
+    gender: product.gender,
+    quantity: 1,
+  });
+
+  const router = useRouter();
+  const { addProduct, cart } = useContext(CartContext);
+
+  //* Methods for update the productCart
+  const onSelectedSize = (size: ISize) => {
+    setTempProductCart((currentValue) => ({ ...currentValue, size }));
+  };
+  const updatedQuantity = (value: number) => {
+    if (value > 0 && value <= product.inStock)
+      setTempProductCart((currentValue) => ({
+        ...currentValue,
+        quantity: value,
+      }));
+  };
+
+  //* Methods for upadte the state
+  const onAddProduct = () => {
+    if (!tempProductCart.size) return;
+
+    const existInCart = cart.find(({ _id }) => _id === tempProductCart._id);
+    console.log(existInCart);
+
+    if (!existInCart) {
+      addProduct(tempProductCart);
+      router.push('/cart');
+    }
+  };
+
   return (
     <ShopLayout title="Product page" pageDescription={product.description}>
       <Grid container spacing={3}>
@@ -40,14 +81,25 @@ const ProductPage: NextPage<Props> = ({ product }) => {
             {/* Quantity */}
             <Box sx={{ my: 2 }}>
               <Typography variant="subtitle2">Quantity</Typography>
-              <ItemCounter />
-              <SizeSelector sizes={product.sizes} />
+              <ItemCounter
+                currentValue={tempProductCart.quantity}
+                updatedQuantity={updatedQuantity}
+              />
+              <SizeSelector
+                sizes={product.sizes}
+                selectedSize={tempProductCart.size}
+                onSelectedSize={onSelectedSize}
+              />
             </Box>
 
             {/* Btn add cart */}
             {product.inStock > 0 ? (
-              <Button color="secondary" className="circular-btn">
-                Add to cart
+              <Button
+                color="secondary"
+                className="circular-btn"
+                onClick={onAddProduct}
+              >
+                {tempProductCart.size ? 'Add to cart' : 'select a size'}
               </Button>
             ) : (
               <Chip
