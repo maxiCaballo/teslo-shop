@@ -2,6 +2,7 @@ import { FC, useReducer } from 'react';
 import { CartContext } from './CartContext';
 import { cartReducer } from './cartReducer';
 import { ICartProduct } from '../../interfaces/cart';
+import Cookie from 'js-cookie';
 
 type Props = {
   children: React.ReactElement;
@@ -18,8 +19,11 @@ const CART_INITIAL_STATE: CartState = {
 export const CartProvider: FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, CART_INITIAL_STATE);
 
-  const addProduct = (payload: ICartProduct) => {
-    dispatch({ type: 'Add', payload });
+  const addProduct = (product: ICartProduct) => {
+    dispatch({ type: 'Add', payload: product });
+  };
+  const updateProductsCart = (product: ICartProduct) => {
+    dispatch({ type: 'Update', payload: product });
   };
 
   return (
@@ -28,6 +32,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
         ...state,
         //Methods
         addProduct,
+        updateProductsCart,
       }}
     >
       {children}

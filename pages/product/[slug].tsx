@@ -32,7 +32,7 @@ const ProductPage: NextPage<Props> = ({ product }) => {
   });
 
   const router = useRouter();
-  const { addProduct, cart } = useContext(CartContext);
+  const { cart, addProduct, updateProductsCart } = useContext(CartContext);
 
   //* Methods for update the productCart
   const onSelectedSize = (size: ISize) => {
@@ -50,12 +50,14 @@ const ProductPage: NextPage<Props> = ({ product }) => {
   const onAddProduct = () => {
     if (!tempProductCart.size) return;
 
-    const existInCart = cart.find(({ _id }) => _id === tempProductCart._id);
+    const existInCart = cart.find(({ size }) => size === tempProductCart.size);
     console.log(existInCart);
 
     if (!existInCart) {
       addProduct(tempProductCart);
-      router.push('/cart');
+      //router.push('/cart');
+    } else {
+      updateProductsCart(tempProductCart);
     }
   };
 
