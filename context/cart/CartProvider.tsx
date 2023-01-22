@@ -1,4 +1,4 @@
-import { FC, useReducer } from 'react';
+import { FC, useEffect, useReducer } from 'react';
 import { CartContext } from './CartContext';
 import { cartReducer } from './cartReducer';
 import { ICartProduct } from '../../interfaces/cart';
@@ -19,11 +19,33 @@ const CART_INITIAL_STATE: CartState = {
 export const CartProvider: FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, CART_INITIAL_STATE);
 
+  //Va en un try catch por si el usuario manipula la localStorage
+  useEffect(() => {
+    localStorage.getItem('cart') ? console.log('hola') : console.log('no');
+    const cartFromlocalStorage = localStorage.getItem('cart')
+      ? JSON.parse(localStorage.getItem('cart')!) //el ! es para indicarle que siempre voy a recibir un string
+      : [];
+
+    dispatch({
+      type: 'Read and set cart from cookie',
+      payload: cartFromlocalStorage,
+    });
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(state.cart));
+  }, [state.cart]);
+
+  //*Methods
   const addProduct = (product: ICartProduct) => {
     dispatch({ type: 'Add', payload: product });
   };
-  const updateProductsCart = (product: ICartProduct) => {
+  const updateProductCart = (product: ICartProduct) => {
     dispatch({ type: 'Update', payload: product });
+  };
+
+  const updateProductCartQuantity = (product: ICartProduct) => {
+    dispatch({ type: 'UpdateQuantity', payload: product });
   };
 
   return (
@@ -32,7 +54,8 @@ export const CartProvider: FC<Props> = ({ children }) => {
         ...state,
         //Methods
         addProduct,
-        updateProductsCart,
+        updateProductCart,
+        updateProductCartQuantity,
       }}
     >
       {children}

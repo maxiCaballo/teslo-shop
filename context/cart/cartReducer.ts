@@ -5,6 +5,8 @@ type CartActionType =
   | { type: 'Load cart from cookies or localstorage'; payload: ICartProduct[] }
   | { type: 'Add'; payload: ICartProduct }
   | { type: 'Update'; payload: ICartProduct }
+  | { type: 'UpdateQuantity'; payload: ICartProduct }
+  | { type: 'Read and set cart from cookie'; payload: ICartProduct[] }
   | { type: 'Remove' };
 
 export const cartReducer = (
@@ -30,9 +32,28 @@ export const cartReducer = (
         ...state,
         cart: [...stateCartCopy.cart],
       };
+    case 'UpdateQuantity':
+      return {
+        ...state,
+        cart: state.cart.map((product) => {
+          if (
+            product._id !== action.payload._id ||
+            product.size !== action.payload.size
+          )
+            return product;
+          //Retorno el objeto actualizado
+          return action.payload;
+        }),
+      };
+    case 'Read and set cart from cookie':
+      console.log('1', action.payload);
+      console.log('2', state.cart);
 
+      return {
+        ...state,
+        cart: [...action.payload],
+      };
     case 'Remove':
-
     default:
       return state;
   }

@@ -1,4 +1,3 @@
-import React from 'react';
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import {
   Box,

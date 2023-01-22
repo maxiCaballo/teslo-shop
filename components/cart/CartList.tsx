@@ -1,5 +1,6 @@
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import NextLink from 'next/link';
+import { CartContext } from '../../context/cart/CartContext';
 
 import {
   Box,
@@ -14,6 +15,7 @@ import {
 } from '@mui/material';
 import { initialData } from '../../database/products';
 import { ItemCounter } from '../ui';
+import { ICartProduct } from '../../interfaces/cart';
 
 interface Props {
   editable?: boolean;
@@ -26,25 +28,36 @@ const products = [
 ];
 
 export const CartList: FC<Props> = ({ editable = false }) => {
-  console.log(products);
+  const { cart, updateProductCart } = useContext(CartContext);
+
+  const productsInCart = cart;
+
+  const onUpdateQuantity = (product: ICartProduct, updatedQuantity: number) => {
+    product.quantity = updatedQuantity;
+    updateProductCart(product);
+  };
 
   return (
     <>
-      {products.map((product) => (
+      {productsInCart.map((product) => (
         <Card
           className="summary-card"
-          key={product.slug}
+          key={product.slug + product.size}
           sx={{ mb: 2, backgroundColor: '#fefefe' }}
         >
           <CardContent>
             <Grid container spacing={2}>
               <Grid item xs={3}>
                 {/* Todo llevar a la pagina del producto */}
-                <NextLink href="/product/slug" passHref legacyBehavior>
+                <NextLink
+                  href={`/product/${product.slug}`}
+                  passHref
+                  legacyBehavior
+                >
                   <Link>
                     <CardActionArea>
                       <CardMedia
-                        image={`/products/${product.images[0]}`}
+                        image={`/products/${product.images}`}
                         component="img"
                         sx={{ borderRadius: '5px' }}
                       />
@@ -57,13 +70,22 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                 <Box display="flex" flexDirection="column">
                   <Typography variant="body1">{product.title}</Typography>
                   <Typography variant="body1">
-                    Size:<strong>M</strong>
+                    Size:<strong> {product.size}</strong>
                   </Typography>
 
                   {editable ? (
-                    <ItemCounter />
+                    //TODO agregar propiedades updatedQuantity y currentValue
+                    <ItemCounter
+                      currentValue={product.quantity}
+                      updatedQuantity={(newValue) =>
+                        onUpdateQuantity(product, newValue)
+                      }
+                    />
                   ) : (
-                    <Typography variant="h5">3</Typography>
+                    <Typography variant="h5">
+                      {product.quantity}{' '}
+                      {`product${product.quantity > 1 ? 's' : ''}`}
+                    </Typography>
                   )}
                 </Box>
               </Grid>
