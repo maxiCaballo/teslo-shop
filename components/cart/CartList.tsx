@@ -1,6 +1,7 @@
 import { FC, useContext } from 'react';
 import NextLink from 'next/link';
 import { CartContext } from '../../context/cart/CartContext';
+import { ICartProduct } from '../../interfaces/cart';
 
 import {
   Box,
@@ -13,28 +14,25 @@ import {
   Link,
   Typography,
 } from '@mui/material';
-import { initialData } from '../../database/products';
 import { ItemCounter } from '../ui';
-import { ICartProduct } from '../../interfaces/cart';
 
 interface Props {
   editable?: boolean;
 }
 
-const products = [
-  initialData.products[0],
-  initialData.products[1],
-  initialData.products[2],
-];
-
 export const CartList: FC<Props> = ({ editable = false }) => {
-  const { cart, updateProductCart } = useContext(CartContext);
-
+  const { cart, updateProductCart, removeProductCart } =
+    useContext(CartContext);
   const productsInCart = cart;
 
+  //* Methods
   const onUpdateQuantity = (product: ICartProduct, updatedQuantity: number) => {
+    if (updatedQuantity < 1) return;
     product.quantity = updatedQuantity;
     updateProductCart(product);
+  };
+  const onRemoveProduct = (product: ICartProduct) => {
+    removeProductCart(product);
   };
 
   return (
@@ -100,7 +98,11 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                 <Typography variant="subtitle1">${product.price}</Typography>
 
                 {editable && (
-                  <Button variant="text" color="secondary">
+                  <Button
+                    variant="text"
+                    color="secondary"
+                    onClick={() => onRemoveProduct(product)}
+                  >
                     Remove
                   </Button>
                 )}

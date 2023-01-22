@@ -7,7 +7,7 @@ type CartActionType =
   | { type: 'Update'; payload: ICartProduct }
   | { type: 'UpdateQuantity'; payload: ICartProduct }
   | { type: 'Read and set cart from cookie'; payload: ICartProduct[] }
-  | { type: 'Remove' };
+  | { type: 'Remove'; payload: ICartProduct };
 
 export const cartReducer = (
   state: CartState,
@@ -46,14 +46,22 @@ export const cartReducer = (
         }),
       };
     case 'Read and set cart from cookie':
-      console.log('1', action.payload);
-      console.log('2', state.cart);
-
       return {
         ...state,
         cart: [...action.payload],
       };
     case 'Remove':
+      return {
+        ...state,
+        cart: state.cart.filter((product) => {
+          if (
+            product._id !== action.payload._id ||
+            product.size !== action.payload.size
+          )
+            return product;
+        }),
+      };
+
     default:
       return state;
   }

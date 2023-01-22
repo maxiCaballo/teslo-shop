@@ -21,19 +21,24 @@ export const CartProvider: FC<Props> = ({ children }) => {
 
   //Va en un try catch por si el usuario manipula la localStorage
   useEffect(() => {
-    localStorage.getItem('cart') ? console.log('hola') : console.log('no');
-    const cartFromlocalStorage = localStorage.getItem('cart')
-      ? JSON.parse(localStorage.getItem('cart')!) //el ! es para indicarle que siempre voy a recibir un string
-      : [];
-
-    dispatch({
-      type: 'Read and set cart from cookie',
-      payload: cartFromlocalStorage,
-    });
+    try {
+      const cartFromlocalStorage = Cookie.get('cart')
+        ? JSON.parse(localStorage.getItem('cart')!) //el ! es para indicarle que siempre voy a recibir un string
+        : [];
+      dispatch({
+        type: 'Read and set cart from cookie',
+        payload: cartFromlocalStorage,
+      });
+    } catch (error) {
+      dispatch({
+        type: 'Read and set cart from cookie',
+        payload: [],
+      });
+    }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(state.cart));
+    Cookie.set('cart', JSON.stringify(state.cart));
   }, [state.cart]);
 
   //*Methods
@@ -43,9 +48,11 @@ export const CartProvider: FC<Props> = ({ children }) => {
   const updateProductCart = (product: ICartProduct) => {
     dispatch({ type: 'Update', payload: product });
   };
-
   const updateProductCartQuantity = (product: ICartProduct) => {
     dispatch({ type: 'UpdateQuantity', payload: product });
+  };
+  const removeProductCart = (product: ICartProduct) => {
+    dispatch({ type: 'Remove', payload: product });
   };
 
   return (
@@ -56,6 +63,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
         addProduct,
         updateProductCart,
         updateProductCartQuantity,
+        removeProductCart,
       }}
     >
       {children}
