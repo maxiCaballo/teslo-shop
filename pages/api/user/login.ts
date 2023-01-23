@@ -3,7 +3,7 @@ import { User } from '@/models';
 
 import { db } from '../../../database';
 import bcrypt from 'bcryptjs';
-import { IUser } from '@/interfaces/User';
+import { jwt } from '@/utils';
 
 type Data = { message: string } | { user: UserType };
 
@@ -40,10 +40,13 @@ const login = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   if (!bcrypt.compareSync(password, user.password!))
     return res.status(400).json({ message: 'Error: password' });
 
-  const { role, name } = user;
+  const { role, name, _id } = user;
+
+  const token = jwt.signToken(_id, email);
+
   return res.status(200).json({
     user: {
-      token: '', //jason web token JWT
+      token, //jason web token JWT
       email,
       name,
       role,
