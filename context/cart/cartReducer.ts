@@ -1,19 +1,23 @@
+import { ICartProduct, IOrderSummary } from '../../interfaces/cart';
 import { CartState } from './CartProvider';
-import { ICartProduct } from '../../interfaces/cart';
 
 type CartActionType =
+  //Cart
   | { type: 'Load cart from cookies or localstorage'; payload: ICartProduct[] }
   | { type: 'Add'; payload: ICartProduct }
   | { type: 'Update'; payload: ICartProduct }
   | { type: 'UpdateQuantity'; payload: ICartProduct }
   | { type: 'Read and set cart from cookie'; payload: ICartProduct[] }
-  | { type: 'Remove'; payload: ICartProduct };
+  | { type: 'Remove'; payload: ICartProduct }
+  //Order summary
+  | { type: 'UpdateOrderSummary'; payload: IOrderSummary };
 
 export const cartReducer = (
   state: CartState,
   action: CartActionType
 ): CartState => {
   switch (action.type) {
+    //Cart
     case 'Add':
       return {
         ...state,
@@ -60,6 +64,12 @@ export const cartReducer = (
           )
             return product;
         }),
+      };
+    //Order summary
+    case 'UpdateOrderSummary':
+      return {
+        ...state,
+        orderSummary: { ...action.payload },
       };
 
     default:

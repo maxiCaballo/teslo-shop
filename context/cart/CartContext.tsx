@@ -1,8 +1,9 @@
 import { createContext } from 'react';
-import { ICartProduct } from '../../interfaces/cart';
+import { ICartProduct, IOrderSummary } from '../../interfaces/cart';
 
 interface ContextProps {
   cart: ICartProduct[];
+  orderSummary: IOrderSummary;
   //Methods
   addProduct: (product: ICartProduct) => void;
   updateProductCart: (product: ICartProduct) => void;

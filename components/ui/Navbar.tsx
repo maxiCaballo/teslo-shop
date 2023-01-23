@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { UiContext } from '@/context';
+import { UiContext, CartContext } from '@/context';
 
 import {
   AppBar,
@@ -23,6 +23,7 @@ import {
 
 export const Navbar = () => {
   const { toogleMenu } = useContext(UiContext);
+  const { totalProducts } = useContext(CartContext).orderSummary;
   const { pathname, push: redirectTo } = useRouter();
   const [search, setSearch] = useState('');
   const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -120,7 +121,7 @@ export const Navbar = () => {
           <NextLink href="/cart" passHref legacyBehavior>
             <Link>
               <IconButton>
-                <Badge badgeContent={2} color="secondary">
+                <Badge badgeContent={totalProducts} color="secondary">
                   <ShoppingCartOutlined />
                 </Badge>
               </IconButton>

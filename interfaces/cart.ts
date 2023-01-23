@@ -10,3 +10,10 @@ export interface ICartProduct {
   gender: IGender;
   quantity: number;
 }
+
+export interface IOrderSummary {
+  totalProducts: number;
+  subTotal: number;
+  taxRate: number;
+  total: number;
+}
