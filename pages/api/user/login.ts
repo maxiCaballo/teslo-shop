@@ -22,7 +22,7 @@ export default function handler(
     case 'POST':
       return login(req, res);
     default:
-      return res.status(400).json({ message: 'Endpoint error' });
+      return res.status(400).json({ message: 'http method error' });
   }
 }
 

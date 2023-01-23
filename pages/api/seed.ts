@@ -25,5 +25,7 @@ export default async function handler(
 
   await db.disconnect();
 
-  res.status(200).json({ message: 'Products populate in DB successfully' });
+  res
+    .status(200)
+    .json({ message: 'Products and Users populate in DB successfully' });
 }
