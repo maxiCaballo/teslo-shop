@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { db, productSeed } from '../../database';
-import { Product } from '../../models';
+import { db, seedData } from '../../database';
+import { Product, User } from '../../models';
 
 type Data = { message: string };
 
@@ -14,12 +14,16 @@ export default async function handler(
     });
   }
 
-  await await db.connect();
+  await db.connect();
 
+  //Products
   await Product.deleteMany();
-  await Product.insertMany(productSeed.initialData.products);
+  await Product.insertMany(seedData.initialData.products);
+  //Users
+  await User.deleteMany();
+  await User.insertMany(seedData.initialData.users);
 
-  await await db.disconnect();
+  await db.disconnect();
 
   res.status(200).json({ message: 'Products populate in DB successfully' });
 }
