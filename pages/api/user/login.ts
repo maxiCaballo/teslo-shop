@@ -35,9 +35,10 @@ const login = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
   await db.disconnect();
 
-  if (!user) return res.status(400).json({ message: 'Error: user not found' });
+  if (!user) return res.status(401).json({ message: 'Error: user not found' });
 
   if (!bcrypt.compareSync(password, user.password!))
+    //! Por seguridad no deberiamos indicar el tipo de error....
     return res.status(400).json({ message: 'Error: password' });
 
   const { role, name, _id } = user;

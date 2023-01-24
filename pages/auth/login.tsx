@@ -1,10 +1,21 @@
-import React from 'react';
+import { useState } from 'react';
 import NextLink from 'next/link';
 
 import { AuthLayout } from '../../components/layouts/AuthLayout';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Chip,
+  Grid,
+  Link,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { ErrorOutline } from '@mui/icons-material';
 import { validations } from '@/utils';
+import axios from 'axios';
+import { teslo_Api } from '../../api';
 
 type FormData = {
   email: string;
@@ -12,13 +23,31 @@ type FormData = {
 };
 
 const LoginPage = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>();
+  const { register, handleSubmit, formState: { errors }, } = useForm<FormData>();
 
-  const onUserLogin: SubmitHandler<FormData> = (data) => console.log({ data });
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const onUserLogin: SubmitHandler<FormData> = async ({ email, password }) => {
+    try {
+
+      setLoading(true);
+      const { data } = await teslo_Api.post('/user/login', { email, password });
+      const { user } = data;
+      setLoading(false);
+
+      //TODO : redireccionar a la pagina desde donde venia el usuario
+      //TODO : si no venía de ninguna lo redireccionamos a la home...
+      console.log(user);
+    } catch (error) {
+      
+      setLoading(false);
+      if (axios.isAxiosError(error)) {
+        setErrorMessage(error.response?.data.message);
+        setTimeout(() => setErrorMessage(''), 3000);
+      }
+    }
+  };
 
   return (
     <AuthLayout title='Login' pageDescription='User login'>
@@ -29,6 +58,17 @@ const LoginPage = () => {
               <Typography variant='h1' component='h1'>
                 Login
               </Typography>
+              {
+                errorMessage && 
+                (
+                <Chip
+                  label={errorMessage}
+                  color='error'
+                  icon={<ErrorOutline />}
+                  className='fadeIn'
+                />
+                )
+              }
             </Grid>
 
             <Grid item xs={12}>
@@ -67,6 +107,7 @@ const LoginPage = () => {
                 className='circular-btn'
                 size='large'
                 fullWidth
+                disabled={loading}
               >
                 login
               </Button>
