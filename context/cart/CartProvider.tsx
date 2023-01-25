@@ -20,8 +20,8 @@ const CART_INITIAL_STATE: CartState = {
     totalProducts: 0,
     subTotal: 0,
     taxRate: 0,
-    total: 0,
-  },
+    total: 0
+  }
 };
 
 export const CartProvider: FC<Props> = ({ children }) => {
@@ -36,12 +36,12 @@ export const CartProvider: FC<Props> = ({ children }) => {
         : [];
       dispatch({
         type: 'Read and set cart from cookie',
-        payload: cartFromlocalStorage,
+        payload: cartFromlocalStorage
       });
     } catch (error) {
       dispatch({
         type: 'Read and set cart from cookie',
-        payload: [],
+        payload: []
       });
     }
   }, []);
@@ -58,21 +58,15 @@ export const CartProvider: FC<Props> = ({ children }) => {
     //Impuestos + 15%
     //Total
 
-    const totalProducts = state.cart.reduce(
-      (acc, curr) => acc + curr.quantity,
-      0
-    );
-    const subTotal = state.cart.reduce(
-      (acc, curr) => acc + curr.price * curr.quantity,
-      0
-    );
+    const totalProducts = state.cart.reduce((acc, curr) => acc + curr.quantity, 0);
+    const subTotal = state.cart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
     const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
 
     const OrderSummary: IOrderSummary = {
       totalProducts,
       subTotal,
       taxRate: subTotal * taxRate,
-      total: Number((subTotal * (taxRate + 1)).toFixed(2)),
+      total: Number((subTotal * (taxRate + 1)).toFixed(2))
     };
     dispatch({ type: 'UpdateOrderSummary', payload: OrderSummary });
   }, [state.cart]);
@@ -99,7 +93,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
         addProduct,
         updateProductCart,
         updateProductCartQuantity,
-        removeProductCart,
+        removeProductCart
       }}
     >
       {children}

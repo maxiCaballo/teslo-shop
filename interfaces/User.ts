@@ -8,4 +8,11 @@ export interface IUser {
   updatedAt?: string;
 }
 
+export interface ILoggedUser {
+  token: string;
+  name: string;
+  email: string;
+  role: IRole;
+}
+
 export type IRole = 'client' | 'admin';
