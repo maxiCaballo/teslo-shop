@@ -12,10 +12,7 @@ type UserType = {
   role: string;
 };
 
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
+export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   switch (req.method) {
     case 'GET':
       return checkJWT(req, res);
@@ -30,7 +27,7 @@ const checkJWT = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   let userId = '';
 
   try {
-    userId = await jwt.checkJWT(token);
+    userId = await jwt.checkJWT(token); //Si es valido retorna el id
   } catch (error) {
     return res.status(401).json({ message: 'unauthorized' });
   }
@@ -50,7 +47,7 @@ const checkJWT = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       token: jwt.signToken(_id, email),
       name,
       email,
-      role,
-    },
+      role
+    }
   });
 };

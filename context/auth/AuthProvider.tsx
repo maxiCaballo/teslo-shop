@@ -1,4 +1,4 @@
-import { FC, useReducer } from 'react';
+import { FC, useReducer, useEffect } from 'react';
 
 import { AuthContext } from './AuthContext';
 import { authReducer } from './authReducer';
@@ -19,6 +19,7 @@ type Props = {
 export type Response = {
   ok: boolean;
   errorMessage?: string;
+  user?: ILoggedUser;
 };
 
 const AUTH_INITIAL_STATE: AuthState = {
@@ -28,6 +29,10 @@ const AUTH_INITIAL_STATE: AuthState = {
 
 export const AuthProvider: FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
+
+  useEffect(() => {
+    checkToken();
+  }, []);
 
   //*Methods
   const login = async (email: string, password: string): Promise<Response> => {
@@ -68,6 +73,18 @@ export const AuthProvider: FC<Props> = ({ children }) => {
         ok: false,
         errorMessage
       };
+    }
+  };
+  const checkToken = async () => {
+    try {
+      //Axios envía la cookie de manera automatica, si fuera fetch habría que especificarle que la quiero enviar.
+      const { data } = await teslo_Api.get('/user/validate-token');
+      const { user } = data;
+
+      dispatch({ type: 'Login', payload: user });
+      Cookies.set('token', user.token);
+    } catch (error) {
+      Cookies.remove('token');
     }
   };
 
