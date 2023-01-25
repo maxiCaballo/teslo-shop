@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 
-import axios from 'axios';
 import { AuthLayout } from '@/components/layouts';
+import { AuthContext } from '@/context';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { teslo_Api } from '../../api';
 import { validations } from '@/utils';
 import { ErrorOutline } from '@mui/icons-material';
 import { Box, Grid, Typography, TextField, Button, Link, Chip } from '@mui/material';
@@ -16,31 +16,30 @@ type FormData = {
 };
 
 const RegisterPage = () => {
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const { userRegister } = useContext(AuthContext);
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>();
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
 
   const onUserRegister: SubmitHandler<FormData> = async ({ name, email, password }) => {
-    try {
-      setLoading(true);
-      const { data } = await teslo_Api.post('/user/register', { name, email, password });
-      const { newUser } = data;
-      setLoading(false);
+    setLoading(true);
+    const { ok, errorMessage } = await userRegister(name, email, password);
+    setLoading(false);
 
-      console.log(newUser);
-
-      //Todo: redireccion a home...
-    } catch (error) {
-      setLoading(false);
-      if (axios.isAxiosError(error)) {
-        setErrorMessage(error.response?.data.message);
-        setTimeout(() => setErrorMessage(''), 3000);
-      }
+    if (!ok) {
+      setErrorMessage(errorMessage!);
+      setTimeout(() => setErrorMessage(''), 3000);
+      return;
     }
+
+    //Si todo salió bien...
+    router.replace('/'); //No uso un push para que no pueda retornar a la pagina anterior
   };
 
   return (
@@ -57,14 +56,7 @@ const RegisterPage = () => {
               <Typography variant='h1' component='h1'>
                 Register
               </Typography>
-              {errorMessage && (
-                <Chip
-                  label={errorMessage}
-                  color='error'
-                  icon={<ErrorOutline />}
-                  className='fadeIn'
-                />
-              )}
+              {errorMessage && <Chip label={errorMessage} color='error' icon={<ErrorOutline />} className='fadeIn' />}
             </Grid>
 
             <Grid item xs={12}>

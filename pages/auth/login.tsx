@@ -1,21 +1,13 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 
+import { AuthContext } from '@/context';
 import { AuthLayout } from '../../components/layouts/AuthLayout';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import {
-  Box,
-  Button,
-  Chip,
-  Grid,
-  Link,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
 import { ErrorOutline } from '@mui/icons-material';
 import { validations } from '@/utils';
-import axios from 'axios';
-import { teslo_Api } from '../../api';
 
 type FormData = {
   email: string;
@@ -23,30 +15,33 @@ type FormData = {
 };
 
 const LoginPage = () => {
-  const { register, handleSubmit, formState: { errors }, } = useForm<FormData>();
-
   const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); //Para desabilitar el boton de login mientras esta cargando...
+  const router = useRouter();
+
+  const { login } = useContext(AuthContext);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<FormData>();
 
   const onUserLogin: SubmitHandler<FormData> = async ({ email, password }) => {
-    try {
+    setLoading(true);
+    const { ok, errorMessage } = await login(email, password);
+    setLoading(false);
 
-      setLoading(true);
-      const { data } = await teslo_Api.post('/user/login', { email, password });
-      const { user } = data;
-      setLoading(false);
-
-      //TODO : redireccionar a la pagina desde donde venia el usuario
-      //TODO : si no venía de ninguna lo redireccionamos a la home...
-      console.log(user);
-    } catch (error) {
-      
-      setLoading(false);
-      if (axios.isAxiosError(error)) {
-        setErrorMessage(error.response?.data.message);
-        setTimeout(() => setErrorMessage(''), 3000);
-      }
+    if (!ok) {
+      setErrorMessage(errorMessage!);
+      setTimeout(() => setErrorMessage(''), 3000);
+      return;
     }
+
+    //Si todo salió bien...
+    router.replace('/'); //No uso un push para que no pueda retornar a la pagina anterior
+
+    //TODO : redireccionar a la pagina desde donde venia el usuario
+    //TODO : si no venía de ninguna lo redireccionamos a la home...
   };
 
   return (
@@ -58,17 +53,7 @@ const LoginPage = () => {
               <Typography variant='h1' component='h1'>
                 Login
               </Typography>
-              {
-                errorMessage && 
-                (
-                <Chip
-                  label={errorMessage}
-                  color='error'
-                  icon={<ErrorOutline />}
-                  className='fadeIn'
-                />
-                )
-              }
+              {errorMessage && <Chip label={errorMessage} color='error' icon={<ErrorOutline />} className='fadeIn' />}
             </Grid>
 
             <Grid item xs={12}>
@@ -79,7 +64,7 @@ const LoginPage = () => {
                 fullWidth
                 {...register('email', {
                   required: 'This field is required',
-                  validate: validations.isEmail,
+                  validate: validations.isEmail
                 })}
                 error={!!errors.email} //Cambia los estilos y los muestra en rojo
                 helperText={errors.email?.message} //Mensje de error de MUI y RHF
@@ -93,7 +78,7 @@ const LoginPage = () => {
                 variant='outlined'
                 fullWidth
                 {...register('password', {
-                  required: 'This field is required',
+                  required: 'This field is required'
                 })}
                 error={!!errors.password}
                 helperText={errors.password?.message}

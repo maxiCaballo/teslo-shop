@@ -13,32 +13,20 @@ type UserType = {
   role: string;
 };
 
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
+export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   switch (req.method) {
     case 'POST':
       return register(req, res);
     default:
       res.status(400).json({ message: 'http method error' });
   }
-  res.status(200).json({ message: 'Example' });
 }
 
 const register = async (req: NextApiRequest, res: NextApiResponse) => {
-  const {
-    name = '',
-    email = '',
-    password = '',
-  } = req.body as { name: string; email: string; password: string };
+  const { name = '', email = '', password = '' } = req.body as { name: string; email: string; password: string };
 
   //Valido usuario
-  const { isValidUser, errorMessage } = validations.validateUser(
-    email,
-    name,
-    password
-  );
+  const { isValidUser, errorMessage } = validations.validateUser(email, name, password);
   if (!isValidUser) return res.status(400).json({ message: errorMessage });
 
   await db.connect();
@@ -53,7 +41,7 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
     name: name.toLocaleLowerCase(),
     email: email.toLocaleLowerCase(),
     password: bcrypt.hashSync(password),
-    role: 'client',
+    role: 'client'
   });
 
   //*Try catch cuando lo guarada porque es una operacion que puede fallar.
@@ -63,7 +51,7 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
     await db.disconnect();
     console.log(error);
     return res.status(500).json({
-      message: 'Server error!',
+      message: 'Server error!'
     });
   }
   await db.disconnect();
@@ -76,7 +64,7 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
       token,
       email,
       name,
-      role,
-    },
+      role
+    }
   });
 };
