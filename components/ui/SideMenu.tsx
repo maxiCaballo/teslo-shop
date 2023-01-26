@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import { UiContext } from '@/context';
+import { AuthContext } from '../../context';
 import {
   Box,
   Divider,
@@ -12,7 +13,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  ListSubheader,
+  ListSubheader
 } from '@mui/material';
 import {
   AccountCircleOutlined,
@@ -24,71 +25,92 @@ import {
   LoginOutlined,
   MaleOutlined,
   SearchOutlined,
-  VpnKeyOutlined,
+  VpnKeyOutlined
 } from '@mui/icons-material';
 
-const userPanelListItem = [
+type PanelListType = {
+  icon: JSX.Element;
+  name: string;
+  pathname: string;
+  isNavbarItem?: boolean;
+  isLoggedUserItem?: boolean;
+};
+
+const userPanelListItem: PanelListType[] = [
   {
     icon: <AccountCircleOutlined />,
     name: 'Perfil',
-    navbarItem: false,
     pathname: '/404',
+    isNavbarItem: false,
+    isLoggedUserItem: true
   },
   {
     icon: <ConfirmationNumberOutlined />,
     name: 'My Orders',
-    navbarItem: false,
     pathname: '/order/history',
+    isNavbarItem: false,
+    isLoggedUserItem: true
   },
   {
     icon: <MaleOutlined />,
     name: 'Mens',
-    navbarItem: true,
     pathname: '/category/men',
+    isNavbarItem: true,
+    isLoggedUserItem: false
   },
   {
     icon: <FemaleOutlined />,
     name: 'Womens',
-    navbarItem: true,
     pathname: '/category/women',
+    isNavbarItem: true,
+    isLoggedUserItem: false
   },
   {
     icon: <EscalatorWarningOutlined />,
-    name: 'Kids',
-    navbarItem: true,
     pathname: '/category/kid',
+    name: 'Kids',
+    isNavbarItem: true,
+    isLoggedUserItem: false
   },
   {
     icon: <VpnKeyOutlined />,
     name: 'Login',
     pathname: '/auth/login',
+    isNavbarItem: false,
+    isLoggedUserItem: false
   },
   {
     icon: <LoginOutlined />,
     name: 'Logout',
-    pathname: '/auth/register',
-  },
+    pathname: '/',
+    isNavbarItem: false,
+    isLoggedUserItem: true
+  }
 ];
-const adminPanelListItem = [
+const adminPanelListItem: PanelListType[] = [
   {
     icon: <CategoryOutlined />,
     name: 'Products',
     pathname: '/404',
+    isLoggedUserItem: true
   },
   {
     icon: <ConfirmationNumberOutlined />,
     name: 'Orders',
     pathname: '/404',
+    isLoggedUserItem: true
   },
   {
     icon: <AdminPanelSettings />,
     name: 'Users',
     pathname: '/404',
-  },
+    isLoggedUserItem: true
+  }
 ];
 
 export const SideMenu = () => {
   const { isSidebarOpen, toogleMenu } = useContext(UiContext);
+  const { user, isLogged, logout } = useContext(AuthContext);
   const [search, setSearch] = useState('');
 
   const router = useRouter();
@@ -107,7 +129,7 @@ export const SideMenu = () => {
     <Drawer
       open={isSidebarOpen}
       onClose={toogleMenu}
-      anchor="right"
+      anchor='right'
       sx={{ backdropFilter: 'blur(4px)', transition: 'all 0.5s ease-out' }}
     >
       <Box sx={{ width: 250, paddingTop: 5 }}>
@@ -116,12 +138,12 @@ export const SideMenu = () => {
             <Input
               autoFocus
               value={search}
-              type="text"
-              placeholder="Search..."
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => (e.key === 'Enter' ? onSearch() : null)}
+              type='text'
+              placeholder='Search...'
+              onChange={e => setSearch(e.target.value)}
+              onKeyDown={e => (e.key === 'Enter' ? onSearch() : null)}
               endAdornment={
-                <InputAdornment position="end">
+                <InputAdornment position='end'>
                   <IconButton onClick={onSearch}>
                     <SearchOutlined />
                   </IconButton>
@@ -129,34 +151,57 @@ export const SideMenu = () => {
               }
             />
           </ListItem>
-          {userPanelListItem.map((item) => (
-            <ListItem
-              key={item.name}
-              sx={{
-                cursor: 'pointer',
-                display: item.navbarItem ? { xs: '', sm: 'none' } : null,
-              }}
-              onClick={() => navigateTo(item.pathname)}
-            >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.name} />
-            </ListItem>
-          ))}
+
+          {userPanelListItem.map(item => {
+            if (isLogged && item.isLoggedUserItem) {
+              return (
+                <ListItem
+                  key={item.name}
+                  sx={{
+                    cursor: 'pointer',
+                    display: item.isNavbarItem ? { xs: '', sm: 'none' } : null
+                  }}
+                  onClick={() => {
+                    navigateTo(item.pathname);
+                    item.name === 'Logout' && logout();
+                  }}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.name} />
+                </ListItem>
+              );
+            } else if (!isLogged && !item.isLoggedUserItem) {
+              return (
+                <ListItem
+                  key={item.name}
+                  sx={{
+                    cursor: 'pointer',
+                    display: item.isNavbarItem ? { xs: '', sm: 'none' } : null
+                  }}
+                  onClick={() => {
+                    navigateTo(`${item.pathname}?p=${router.asPath}`);
+                  }}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.name} />
+                </ListItem>
+              );
+            }
+          })}
 
           {/* Admin */}
           <Divider />
-          <ListSubheader>Admin Panel</ListSubheader>
 
-          {adminPanelListItem.map((item) => (
-            <ListItem
-              key={item.name}
-              sx={{ cursor: 'pointer' }}
-              onClick={() => navigateTo(item.pathname)}
-            >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.name} />
-            </ListItem>
-          ))}
+          <ListSubheader sx={{ display: user?.role === 'admin' ? 'flex' : 'none' }}>Admin Panel</ListSubheader>
+
+          {isLogged &&
+            user?.role === 'admin' &&
+            adminPanelListItem.map(item => (
+              <ListItem key={item.name} sx={{ cursor: 'pointer' }} onClick={() => navigateTo(item.pathname)}>
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.name} />
+              </ListItem>
+            ))}
         </List>
       </Box>
     </Drawer>

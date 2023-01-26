@@ -6,6 +6,7 @@ import { ILoggedUser } from '../../interfaces/User';
 import axios from 'axios';
 import { teslo_Api } from '@/api';
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
 
 export interface AuthState {
   isLogged: boolean;
@@ -29,6 +30,7 @@ const AUTH_INITIAL_STATE: AuthState = {
 
 export const AuthProvider: FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
+  const router = useRouter();
 
   useEffect(() => {
     checkToken();
@@ -55,6 +57,16 @@ export const AuthProvider: FC<Props> = ({ children }) => {
       };
     }
   };
+  const logout = () => {
+    Cookies.remove('token');
+    Cookies.remove('cart');
+
+    router.reload();
+
+    // ? No es necesario hacer el dispatch ya que al borrar de las cookies el token y el cart
+    // ? cuando carga la aplicacion va a cargar con el token vacío y por ende no se va a cargar en el estado
+    //dispatch({ type: 'Logout' });
+  };
   const userRegister = async (name: string, email: string, password: string): Promise<Response> => {
     try {
       const { data } = await teslo_Api.post('/user/register', { name, email, password });
@@ -76,6 +88,8 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     }
   };
   const checkToken = async () => {
+    if (!Cookies.get('token')) return;
+
     try {
       //Axios envía la cookie de manera automatica, si fuera fetch habría que especificarle que la quiero enviar.
       const { data } = await teslo_Api.get('/user/validate-token');
@@ -88,5 +102,5 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     }
   };
 
-  return <AuthContext.Provider value={{ ...state, login, userRegister }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ ...state, login, logout, userRegister }}>{children}</AuthContext.Provider>;
 };

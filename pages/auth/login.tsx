@@ -17,9 +17,12 @@ type FormData = {
 const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false); //Para desabilitar el boton de login mientras esta cargando...
-  const router = useRouter();
 
   const { login } = useContext(AuthContext);
+
+  const router = useRouter();
+  const destintation = router.query.p?.toString() || '/'; //Destino desde donde venia el usuario
+
   const {
     register,
     handleSubmit,
@@ -37,11 +40,9 @@ const LoginPage = () => {
       return;
     }
 
-    //Si todo salió bien...
-    router.replace('/'); //No uso un push para que no pueda retornar a la pagina anterior
-
-    //TODO : redireccionar a la pagina desde donde venia el usuario
-    //TODO : si no venía de ninguna lo redireccionamos a la home...
+    // Si todo salió bien redirecciono a la page desde donde venia
+    // sino viene con query redirecciono a la home
+    router.replace(destintation); //No uso un push para que no pueda retornar a la pagina anterior
   };
 
   return (
@@ -99,7 +100,7 @@ const LoginPage = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <NextLink href='/auth/register' passHref legacyBehavior>
+              <NextLink href={`/auth/register?p=${destintation}`} passHref legacyBehavior>
                 <Link>¿ Dont{"'t"} have an account ?</Link>
               </NextLink>
             </Grid>

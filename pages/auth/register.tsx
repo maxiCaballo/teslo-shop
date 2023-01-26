@@ -18,8 +18,11 @@ type FormData = {
 const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
   const { userRegister } = useContext(AuthContext);
+
   const router = useRouter();
+  const destintation = router.query.p?.toString() || '/';
 
   const {
     register,
@@ -38,8 +41,9 @@ const RegisterPage = () => {
       return;
     }
 
-    //Si todo salió bien...
-    router.replace('/'); //No uso un push para que no pueda retornar a la pagina anterior
+    // Si todo salió bien redirecciono a la page desde donde venia
+    // sino viene con query redirecciono a la home
+    router.replace(destintation); //No uso un push para que no pueda retornar a la pagina anterior
   };
 
   return (
@@ -124,7 +128,7 @@ const RegisterPage = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <NextLink href='/auth/login' passHref legacyBehavior>
+              <NextLink href={`/auth/login?p=${destintation}`} passHref legacyBehavior>
                 <Link>¿ Do you have an account ?</Link>
               </NextLink>
             </Grid>

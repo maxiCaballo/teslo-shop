@@ -7,6 +7,7 @@ interface ContextProps {
   user?: ILoggedUser;
   //Methods
   login: (email: string, password: string) => Promise<Response>;
+  logout: () => void;
   userRegister: (name: string, email: string, password: string) => Promise<Response>;
 }
 
