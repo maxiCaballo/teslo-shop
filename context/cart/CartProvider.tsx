@@ -6,6 +6,7 @@ import Cookie from 'js-cookie';
 
 //Interfaces
 export interface CartState {
+  isLoaded: boolean; // Esta prop es para leer de la Cookie el carrito, puede ser un proceso asincrono por eso va en una prop.
   cart: ICartProduct[];
   orderSummary: IOrderSummary;
 }
@@ -15,6 +16,7 @@ type Props = {
 };
 
 const CART_INITIAL_STATE: CartState = {
+  isLoaded: false,
   cart: [],
   orderSummary: {
     totalProducts: 0,
