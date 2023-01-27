@@ -1,7 +1,7 @@
 import { FC, useEffect, useReducer } from 'react';
 import { CartContext } from './CartContext';
 import { cartReducer } from './cartReducer';
-import { ICartProduct, IOrderSummary } from '../../interfaces/cart';
+import { ICartProduct, IOrderSummary, IShippingAddress } from '../../interfaces/cart';
 import Cookie from 'js-cookie';
 
 //Interfaces
@@ -9,6 +9,7 @@ export interface CartState {
   isLoaded: boolean; // Esta prop es para leer de la Cookie el carrito, puede ser un proceso asincrono por eso va en una prop.
   cart: ICartProduct[];
   orderSummary: IOrderSummary;
+  shippingAddress?: IShippingAddress;
 }
 
 type Props = {
@@ -23,19 +24,21 @@ const CART_INITIAL_STATE: CartState = {
     subTotal: 0,
     taxRate: 0,
     total: 0
-  }
+  },
+  shippingAddress: undefined
 };
 
 export const CartProvider: FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, CART_INITIAL_STATE);
 
-  //Leer cookie y actualizar estado
+  //*useEffects...
+
+  // 1) Leer cookie y actualizar estado
   //Va en un try catch por si el usuario manipula el localStorage
   useEffect(() => {
     try {
-      const cartFromlocalStorage = Cookie.get('cart')
-        ? JSON.parse(Cookie.get('cart')!) //el ! es para indicarle que siempre voy a recibir un string
-        : [];
+      //el ! es para indicarle que siempre voy a recibir un string
+      const cartFromlocalStorage = Cookie.get('cart') ? JSON.parse(Cookie.get('cart')!) : [];
       dispatch({
         type: 'Read and set cart from cookie',
         payload: cartFromlocalStorage
@@ -48,12 +51,12 @@ export const CartProvider: FC<Props> = ({ children }) => {
     }
   }, []);
 
-  //Setear cookie cada vez que haya un cambio en el estado
+  // 2) Setear cookie cada vez que haya un cambio en el estado
   useEffect(() => {
     Cookie.set('cart', JSON.stringify(state.cart));
   }, [state.cart]);
 
-  //Actualizar montos de la orden
+  // 3) Actualizar montos de la orden
   useEffect(() => {
     //Cantidad de productos
     //Subtotal
@@ -73,7 +76,26 @@ export const CartProvider: FC<Props> = ({ children }) => {
     dispatch({ type: 'UpdateOrderSummary', payload: OrderSummary });
   }, [state.cart]);
 
+  // 4) Carga la direccion de envío de la cookie...
+  useEffect(() => {
+    //Mando a llamar al dispatch solo si se que hay algo en la cookie...
+    if (Cookie.get('firstName')) {
+      const shippingAddress: IShippingAddress = {
+        firstName: Cookie.get('firstName') || '',
+        lastName: Cookie.get('lastName') || '',
+        address: Cookie.get('address') || '',
+        address2: Cookie.get('address2') || ' ',
+        zipCode: Cookie.get('zipCode') || '',
+        city: Cookie.get('city') || '',
+        phone: Cookie.get('phone') || '',
+        country: Cookie.get('country') || ''
+      };
+      dispatch({ type: 'LoadAddressFromCookies', payload: shippingAddress });
+    }
+  }, []);
+
   //*Methods
+  //Cart products
   const addProduct = (product: ICartProduct) => {
     dispatch({ type: 'Add', payload: product });
   };
@@ -86,6 +108,19 @@ export const CartProvider: FC<Props> = ({ children }) => {
   const removeProductCart = (product: ICartProduct) => {
     dispatch({ type: 'Remove', payload: product });
   };
+  //Shipping address
+  const updateAddress = (address: IShippingAddress) => {
+    Cookie.set('firstName', address.firstName);
+    Cookie.set('lastName', address.lastName);
+    Cookie.set('address', address.address);
+    Cookie.set('address2', address.address2 || '');
+    Cookie.set('zipCode', address.zipCode);
+    Cookie.set('city', address.city);
+    Cookie.set('country', address.country);
+    Cookie.set('phone', address.phone);
+
+    dispatch({ type: 'UpdateAddress', payload: address });
+  };
 
   return (
     <CartContext.Provider
@@ -95,7 +130,8 @@ export const CartProvider: FC<Props> = ({ children }) => {
         addProduct,
         updateProductCart,
         updateProductCartQuantity,
-        removeProductCart
+        removeProductCart,
+        updateAddress
       }}
     >
       {children}

@@ -1,22 +1,22 @@
-import { CartList, OrderSummary } from '../../components/cart';
+import { useContext, useMemo } from 'react';
 import NextLink from 'next/link';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Divider,
-  Grid,
-  Typography,
-  Link,
-} from '@mui/material';
-import { ShopLayout } from '../../components/layouts/ShopLayout';
+import { CartContext } from '../../context/cart/CartContext';
+
+import { CartList, OrderSummary } from '../../components/cart';
+import { ShopLayout } from '../../components/layouts';
+import { Box, Button, Card, CardContent, Divider, Grid, Typography, Link } from '@mui/material';
+import { countries } from './address';
 
 const CheckoutSummaryPage = () => {
+  const { shippingAddress, cart } = useContext(CartContext);
+
+  //Si no hay shipping address no tiene sentido mostrar la page
+  if (!shippingAddress) return <></>;
+  const country = countries.find((country) => country.code === shippingAddress.country);
   return (
-    <ShopLayout title="Summary order page" pageDescription="Resume order page">
+    <ShopLayout title='Summary order page' pageDescription='Resume order page'>
       <>
-        <Typography variant="h1" component="h1" sx={{ mb: 2 }}>
+        <Typography variant='h1' component='h1' sx={{ mb: 2 }}>
           Summary order
         </Typography>
 
@@ -27,59 +27,53 @@ const CheckoutSummaryPage = () => {
           </Grid>
 
           <Grid item xs={12} sm={5}>
-            <Card className="summary-card" sx={{ backgroundColor: '#f7f7f7' }}>
+            <Card className='summary-card' sx={{ backgroundColor: '#f7f7f7' }}>
               <CardContent>
-                <Typography variant="h2">{`Resume: products (3)`}</Typography>
+                <Typography variant='h2'>{`Resume: products (${cart.length && cart.length})`}</Typography>
 
                 <Divider sx={{ my: 1 }} />
 
                 <Grid container>
                   <Grid item xs={6}>
-                    <Typography variant="subtitle1">
-                      Delivery address
-                    </Typography>
+                    <Typography variant='subtitle1'>Delivery address</Typography>
                   </Grid>
-                  <Grid item xs={6} display="flex" justifyContent="end">
-                    <NextLink href="/checkout/address" passHref legacyBehavior>
-                      <Link underline="always">Edit</Link>
+                  <Grid item xs={6} display='flex' justifyContent='end'>
+                    <NextLink href='/checkout/address' passHref legacyBehavior>
+                      <Link underline='always'>Edit</Link>
                     </NextLink>
                   </Grid>
 
                   <Grid item xs={12} sx={{ mb: 1 }}>
-                    <Typography>Maximiliano caballo</Typography>
+                    <Typography>{shippingAddress?.firstName}</Typography>
                   </Grid>
                   <Grid item xs={12} sx={{ mb: 1 }}>
-                    <Typography>323 some place</Typography>
+                    <Typography>{shippingAddress?.address}</Typography>
                   </Grid>
                   <Grid item xs={12} sx={{ mb: 1 }}>
-                    <Typography>Sittisville, HYA 23S</Typography>
+                    <Typography>
+                      {shippingAddress?.city}, {shippingAddress?.zipCode}
+                    </Typography>
                   </Grid>
                   <Grid item xs={12} sx={{ mb: 1 }}>
-                    <Typography>Canadá</Typography>
+                    <Typography>{country && country.name}</Typography>
                   </Grid>
                   <Grid item xs={12} sx={{ mb: 1 }}>
-                    <Typography>+598 1234586</Typography>
+                    <Typography>{shippingAddress?.phone}</Typography>
                   </Grid>
                 </Grid>
 
                 <Divider sx={{ my: 1 }} />
 
-                <Grid
-                  item
-                  xs={12}
-                  display="flex"
-                  justifyContent="end"
-                  sx={{ mb: 1 }}
-                >
-                  <NextLink href="/cart" passHref legacyBehavior>
-                    <Link underline="always">Edit</Link>
+                <Grid item xs={12} display='flex' justifyContent='end' sx={{ mb: 1 }}>
+                  <NextLink href='/cart' passHref legacyBehavior>
+                    <Link underline='always'>Edit</Link>
                   </NextLink>
                 </Grid>
 
                 <OrderSummary />
 
                 <Box sx={{ mt: 3 }}>
-                  <Button color="secondary" className="circular-btn" fullWidth>
+                  <Button color='secondary' className='circular-btn' fullWidth>
                     Confirm
                   </Button>
                 </Box>

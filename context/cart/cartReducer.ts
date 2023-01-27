@@ -1,4 +1,4 @@
-import { ICartProduct, IOrderSummary } from '../../interfaces/cart';
+import { ICartProduct, IOrderSummary, IShippingAddress } from '../../interfaces/cart';
 import { CartState } from './CartProvider';
 
 type CartActionType =
@@ -8,6 +8,9 @@ type CartActionType =
   | { type: 'UpdateQuantity'; payload: ICartProduct }
   | { type: 'Read and set cart from cookie'; payload: ICartProduct[] }
   | { type: 'Remove'; payload: ICartProduct }
+  //Shipping address
+  | { type: 'UpdateAddress'; payload: IShippingAddress }
+  | { type: 'LoadAddressFromCookies'; payload: IShippingAddress }
   //Order summary
   | { type: 'UpdateOrderSummary'; payload: IOrderSummary };
 
@@ -33,7 +36,7 @@ export const cartReducer = (state: CartState, action: CartActionType): CartState
     case 'UpdateQuantity':
       return {
         ...state,
-        cart: state.cart.map(product => {
+        cart: state.cart.map((product) => {
           if (product._id !== action.payload._id || product.size !== action.payload.size) return product;
           //Retorno el objeto actualizado
           return action.payload;
@@ -48,9 +51,20 @@ export const cartReducer = (state: CartState, action: CartActionType): CartState
     case 'Remove':
       return {
         ...state,
-        cart: state.cart.filter(product => {
+        cart: state.cart.filter((product) => {
           if (product._id !== action.payload._id || product.size !== action.payload.size) return product;
         })
+      };
+    //Shipping address
+    case 'UpdateAddress':
+      return {
+        ...state,
+        shippingAddress: action.payload
+      };
+    case 'LoadAddressFromCookies':
+      return {
+        ...state,
+        shippingAddress: action.payload
       };
     //Order summary
     case 'UpdateOrderSummary':
