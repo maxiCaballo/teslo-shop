@@ -7,6 +7,13 @@ export interface IUser {
   createdAt?: string;
   updatedAt?: string;
 }
+export interface ILoggedUserNextAuth {
+  _id: string;
+  name: string;
+  token: string;
+  email: string;
+  role: IRole;
+}
 
 export interface ILoggedUser {
   token: string;

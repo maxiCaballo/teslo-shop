@@ -1,10 +1,10 @@
 import { FC, useReducer, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 
 import { AuthContext } from './AuthContext';
 import { authReducer } from './authReducer';
-import { ILoggedUser, IUser } from '../../interfaces/User';
+import { ILoggedUser, IUser, ILoggedUserNextAuth } from '../../interfaces/User';
 import { teslo_Api } from '@/api';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -36,8 +36,20 @@ export const AuthProvider: FC<Props> = ({ children }) => {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      // dispatch({type:'Login',payload: data?.user as IUser});
+      const { id, email, name, role } = data.user;
+      //Esto lo tengo que hacer porque no me deja grabar en el metodo authorize de next-auth el _id
+      //todo: ver como grabo el token dentro del objeto usuario....
+      const user = {
+        token: 'asdasd',
+        _id: id,
+        email,
+        name,
+        role
+      };
+      dispatch({ type: 'Login', payload: user as ILoggedUserNextAuth });
     }
+    console.log('state ', state.user);
+    console.log('nextauth data ', data);
   }, [status, data]);
 
   //*Chequeo del token generados por nosotros
@@ -67,7 +79,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     }
   };
   const logout = () => {
-    Cookies.remove('token');
+    // Cookies.remove('token');
     Cookies.remove('cart');
 
     Cookies.remove('firstName');
@@ -79,7 +91,9 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     Cookies.remove('country');
     Cookies.remove('phone');
 
-    router.reload();
+    signOut();
+
+    // router.reload();
 
     // ? No es necesario hacer el dispatch ya que al borrar de las cookies el token y el cart
     // ? cuando carga la aplicacion va a cargar con el token vacío y por ende no se va a cargar en el estado
