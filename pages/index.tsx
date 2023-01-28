@@ -7,28 +7,21 @@ import { ProductList } from '@/components/products';
 import { useProducts } from '@/hooks';
 
 const HomePage: NextPage = () => {
-  const { products, isLoading, error } = useProducts('/products');
+  const { products, isLoading, error } = useProducts('/products'); //SWR para cachearlos
 
   if (error) return <h1>Error</h1>;
 
   return (
-    <ShopLayout
-      title={'Teslo-Shop - Home'}
-      pageDescription={'Find the best products on tesloshop'}
-    >
+    <ShopLayout title={'Teslo-Shop - Home'} pageDescription={'Find the best products on tesloshop'}>
       <>
-        <Typography variant="h1" component="h1">
+        <Typography variant='h1' component='h1'>
           Shop
         </Typography>
-        <Typography variant="h2" sx={{ mb: 1 }} component="h1">
+        <Typography variant='h2' sx={{ mb: 1 }} component='h1'>
           All products:
         </Typography>
 
-        {isLoading ? (
-          <FullScreenSpinner />
-        ) : (
-          <ProductList products={products} />
-        )}
+        {isLoading ? <FullScreenSpinner /> : <ProductList products={products} />}
       </>
     </ShopLayout>
   );

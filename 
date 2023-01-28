@@ -1,0 +1,37 @@
+[33m0b1fc8e[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Logica para almacenar y persistir datos de envio del cliente utilizando el contexto y las cookies
+[33m0c42a90[m Logica para redireccionar a /cart/empty si es que el carrito está vacío utilizando client side rendering
+[33m34d631e[m Logica para ocultar items del navbar en funcion de si esta logueado o no o si es admin o cliente además funcion de logout implementada, y logica para redireccionar a page desde donde estaba cuando entra a login o register
+[33m217bbfb[m Persistencia del AuthState leyendo la cookie con la funcion checkToken
+[33mf1a4019[m Funcion Login y userRegister en el AuthProvider que disparan las actions correspondientes en el reducer, para poder utilizarlas en la pages Login y Register
+[33m2e7549d[m Creacion de Context-Provider-Reducer de la Authenticacion de usuario
+[33m67bd109[m Validacion en pages de login y register devuelve token en las dos
+[33m2d804c4[m Instalacion de react-hook-form axios y validaciones en el form de login
+[33m1594a4a[m Creacion endpoint /user/validate-token y metodo checkJWT en carpeta utils
+[33mc7cb0a7[m Creacion de endpoint de registro de usuario funcionando y archivo de validaciones en carpeta utils.
+[33mcc28d6b[m Instalacion jwt e implementacion de funcion para generar token
+[33m227ffb4[m instalacion de bcrypt- creacion seed de usuarios - endpoint login creado
+[33madee20e[m Logica-action y renderizados de los datos del OrderSummary
+[33m1ae500e[m Logica para remove producto de carrito y solucionado el bug de persistencia de cookie
+[33m3376b52[m Logica para que quede almacenado en las cookies(temporalmente en localStorage) el estado del carrito no del todo completo... y ademas logica para incrementar y decrementar cantidades desde la  cartPage
+[33m27a20f8[m Logica de agregar productos al carrito pronta
+[33m8e9a7cb[m Conexion entre productPage y los componentes de seleccionde  talla y seleccion de cantidad- ademas implementacion de agregar al carrito de producto que no existia previamente en el mismo
+[33m43cc952[m Logica en productCard y en productPage para indicarle al usuario cuando no hay stock disponible
+[33m37687ec[m Creacion del contexto - provider - reducer - interfaz del carrito
+[33m0afb71e[m Logica de barra de busqueda del navbar y correcion de propiedad del SlideShow ease estaba en eaes
+[33m2af21c1[m Input de busqueda en el sidebar funcionando y direccionando - Page /search/[query] pronta con SSR.
+[33mc5d323b[m Generacion statica de la pagina de product mas ejemplos con codigo comentado de esa misma page con SSR y CSR, ademas redireccion de links en el sidebar menu
+[33mec35149[m Creacion del contexto,provider y reducer para poder abirir y cerrar el sidebarMenu
+[33mbdc8643[m Instalacion de libreria SWR para peticiones http, creacion de hook useProducts usando SWR para los diferntes endpoints, creacion de pagina de categorias de kids-man-women y componente spinner para cuando aun no tenemos productos.
+[33ma999bf3[m refactoring de endpoint /products?gender='' , creacion de endpoint /products/slug y /products/search/query esta ultima trae los products cuya query este contenida en la prop title o tags
+[33m78638c2[m Agregué dos propiedades a la interfaz de Product,cree el endpoint /products que me trae todos productos y filtrados por genero con una query
+[33mcda604c[m Creacion del archivo docker-compose, modelo de Product, variables de entorno y el Readme
+[33m5c05143[m Login y Register page
+[33m6ea0d52[m Page de carrito - Page checkout - Page order
+[33m3ba39ea[m Pagina de carrito y pagina de registro de direccion de envio
+[33m327d396[m Product page
+[33m83a4b8a[m Transicion de imagenes en el evento onMouseEnter y onMouseLeave en el ProductCard
+[33m376a01a[m Componente ProductList y ProductCard y creación de interfaz de Product
+[33m989206d[m Sidebar con sus respectivos list item
+[33m0c5296c[m Page 404 y Home con grid para ver las imgs de los productos
+[33ma804f29[m Configuración estructura del proyecto - instalacion de dependencias - Layout principial - componente navbar
+[33m8cee388[m Initial commit from Create Next App

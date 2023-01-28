@@ -27,12 +27,13 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.8.3",
     "next": "13.1.2",
+    "next-auth": "^4.18.10",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.42.1",
     "react-slideshow-image": "^4.1.1",
     "swr": "^2.0.0",
-    "typescript": "4.9.4"    
+    "typescript": "4.9.4"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.2",
