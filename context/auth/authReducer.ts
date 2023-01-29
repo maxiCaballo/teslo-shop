@@ -1,7 +1,7 @@
 import { AuthState } from './AuthProvider';
 import { ILoggedUser, IUserNextAuth } from '../../interfaces/User';
 
-type ActionType = { type: 'Login'; payload: ILoggedUser | IUserNextAuth } | { type: 'Logout' };
+type ActionType = { type: 'Login'; payload: ILoggedUser } | { type: 'Logout' };
 
 export const authReducer = (state: AuthState, action: ActionType) => {
   switch (action.type) {

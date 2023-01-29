@@ -4,7 +4,7 @@ import { Response } from './AuthProvider';
 
 interface ContextProps {
   isLogged: boolean;
-  user?: ILoggedUser | IUserNextAuth; //la diferencia es que tiene _id el user de nextAuth y el loggedUser no
+  user?: ILoggedUser; //la diferencia es que tiene _id el user de nextAuth y el loggedUser no
   //Methods
   login: (email: string, password: string) => Promise<Response>;
   logout: () => void;

@@ -11,7 +11,7 @@ import axios from 'axios';
 
 export interface AuthState {
   isLogged: boolean;
-  user?: ILoggedUser | IUserNextAuth;
+  user?: ILoggedUser;
 }
 
 type Props = {
@@ -36,10 +36,10 @@ export const AuthProvider: FC<Props> = ({ children }) => {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      dispatch({ type: 'Login', payload: data.user as IUserNextAuth });
+      dispatch({ type: 'Login', payload: data.user as ILoggedUser });
     }
-    console.log('state ', state.user);
-    console.log('nextauth data ', data);
+    console.log(data?.user);
+    console.log(data?.accessToken);
   }, [status, data]);
 
   //*Chequeo del token generados por nosotros
