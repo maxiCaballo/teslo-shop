@@ -22,3 +22,23 @@ export const checkUserEmailPassword = async (email: string = '', password: strin
     role
   };
 };
+
+export const checkUserWithOAuth = async (oAuthEmail: string, oAuthName: string) => {
+  await db.connect();
+  const user = await User.findOne({ email: oAuthEmail });
+
+  if (user) {
+    await db.disconnect();
+
+    const { _id, name, email, role } = user;
+    return { _id, email, name, role };
+  }
+
+  const newUser = new User({ email: oAuthEmail, name: oAuthName, password: '@', role: 'client' });
+  //El save podría fallar, se podria colocar dentro de un try catch
+  await newUser.save();
+  await db.disconnect();
+
+  const { _id, name, email, role } = newUser;
+  return { _id, email, name, role };
+};

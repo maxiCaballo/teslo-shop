@@ -35,14 +35,14 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   // const router = useRouter();
 
   useEffect(() => {
-    if (status === 'authenticated') {
+    if (status === 'authenticated' && data.user) {
       dispatch({ type: 'Login', payload: data.user as ILoggedUser });
     }
     console.log(data?.user);
     console.log(data?.accessToken);
   }, [status, data]);
 
-  //*Chequeo del token generados por nosotros
+  //Chequeo del token generado por nosotros y si es valido guardo el usuario en el estado...
   // useEffect(() => {
   //   checkToken();
   // }, []);

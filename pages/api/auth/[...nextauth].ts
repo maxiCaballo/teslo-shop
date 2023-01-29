@@ -48,11 +48,10 @@ export default NextAuth({
         switch (account.type) {
           case 'credentials':
             token.user = user;
-
             break;
 
           case 'oauth':
-            //todo: guardar usuario o verificar si existe en db
+            token.user = await dbUsers.checkUserWithOAuth(user?.email || '', user?.name || '');
             break;
         }
       }
