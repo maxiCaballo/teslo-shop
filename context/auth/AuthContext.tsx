@@ -1,10 +1,10 @@
 import { createContext } from 'react';
-import { ILoggedUser } from '../../interfaces/User';
+import { ILoggedUser, IUserNextAuth } from '../../interfaces/User';
 import { Response } from './AuthProvider';
 
 interface ContextProps {
   isLogged: boolean;
-  user?: ILoggedUser;
+  user?: ILoggedUser | IUserNextAuth; //la diferencia es que tiene _id el user de nextAuth y el loggedUser no
   //Methods
   login: (email: string, password: string) => Promise<Response>;
   logout: () => void;

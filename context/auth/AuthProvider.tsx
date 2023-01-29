@@ -4,14 +4,14 @@ import { useSession, signOut } from 'next-auth/react';
 
 import { AuthContext } from './AuthContext';
 import { authReducer } from './authReducer';
-import { ILoggedUser, IUser, ILoggedUserNextAuth } from '../../interfaces/User';
+import { ILoggedUser, IUserNextAuth } from '../../interfaces/User';
 import { teslo_Api } from '@/api';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
 export interface AuthState {
   isLogged: boolean;
-  user?: ILoggedUser;
+  user?: ILoggedUser | IUserNextAuth;
 }
 
 type Props = {
@@ -32,21 +32,11 @@ const AUTH_INITIAL_STATE: AuthState = {
 export const AuthProvider: FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
   const { data, status } = useSession(); //next-auth
-  const router = useRouter();
+  // const router = useRouter();
 
   useEffect(() => {
     if (status === 'authenticated') {
-      const { id, email, name, role } = data.user;
-      //Esto lo tengo que hacer porque no me deja grabar en el metodo authorize de next-auth el _id
-      //todo: ver como grabo el token dentro del objeto usuario....
-      const user = {
-        token: 'asdasd',
-        _id: id,
-        email,
-        name,
-        role
-      };
-      dispatch({ type: 'Login', payload: user as ILoggedUserNextAuth });
+      dispatch({ type: 'Login', payload: data.user as IUserNextAuth });
     }
     console.log('state ', state.user);
     console.log('nextauth data ', data);

@@ -3,6 +3,7 @@ import GithubProvider from 'next-auth/providers/github';
 //Para enlazarlo con mi propia authenticacion o con los usuarios que se registren desde mi app...
 import Credentials from 'next-auth/providers/credentials';
 import { dbUsers } from '@/database';
+import { IUserNextAuth } from '../../../interfaces/User';
 
 declare module 'next-auth' {
   interface Session {
@@ -22,17 +23,12 @@ export default NextAuth({
         password: { label: 'Password', type: 'password', placeholder: 'password...' }
       },
       //Método que authoriza o no el usuario en funcion de sus credenciales
-      async authorize(credentials) {
+      async authorize(credentials): Promise<IUserNextAuth | null> {
         // Props: id, email, name son necesarias sinó tira error...
         const user = await dbUsers.checkUserEmailPassword(credentials!.email, credentials!.password);
         if (!user) return null;
 
-        return {
-          id: user._id,
-          email: user.email,
-          name: user.name,
-          role: user.role
-        };
+        return user;
       }
     }),
     // ...add more providers here
