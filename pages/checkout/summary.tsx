@@ -1,6 +1,8 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import { CartContext } from '../../context/cart/CartContext';
+import Cookies from 'js-cookie';
 
 import { CartList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
@@ -9,10 +11,19 @@ import { countries } from './address';
 
 const CheckoutSummaryPage = () => {
   const { shippingAddress, cart } = useContext(CartContext);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!Cookies.get('firstName')) {
+      router.push('/checkout/address');
+    }
+  }, [router]);
 
   //Si no hay shipping address no tiene sentido mostrar la page
   if (!shippingAddress) return <></>;
+
   const country = countries.find((country) => country.code === shippingAddress.country);
+
   return (
     <ShopLayout title='Summary order page' pageDescription='Resume order page'>
       <>

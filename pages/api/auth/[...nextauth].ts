@@ -75,7 +75,6 @@ export default NextAuth({
       //? el token viene undefined
       session.accessToken = token.accessToken;
       session.user = token.user;
-      console.log('Desde session: ', session);
       return session;
     }
   }
