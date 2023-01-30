@@ -1,11 +1,13 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
+import { signIn, getSession, getProviders } from 'next-auth/react';
 
-import { AuthContext } from '@/context';
+// import { AuthContext } from '@/context';
 import { AuthLayout } from '../../components/layouts/AuthLayout';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Box, Button, Chip, Grid, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, Divider, Grid, Link, TextField, Typography } from '@mui/material';
 import { ErrorOutline } from '@mui/icons-material';
 import { validations } from '@/utils';
 
@@ -18,7 +20,15 @@ const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false); //Para desabilitar el boton de login mientras esta cargando...
 
-  const { login } = useContext(AuthContext);
+  const [providers, setProviders] = useState<any>({});
+  useEffect(() => {
+    getProviders().then((prov) => {
+      console.log(prov);
+      setProviders(prov);
+    });
+  }, []);
+
+  // const { login } = useContext(AuthContext);
 
   const router = useRouter();
   const destintation = router.query.p?.toString() || '/'; //Destino desde donde venia el usuario
@@ -30,19 +40,23 @@ const LoginPage = () => {
   } = useForm<FormData>();
 
   const onUserLogin: SubmitHandler<FormData> = async ({ email, password }) => {
-    setLoading(true);
-    const { ok, errorMessage } = await login(email, password);
-    setLoading(false);
+    //* Login personalizado sin next-auth
 
-    if (!ok) {
-      setErrorMessage(errorMessage!);
-      setTimeout(() => setErrorMessage(''), 3000);
-      return;
-    }
+    // setLoading(true);
+    // const { ok, errorMessage } = await login(email, password);
+    // setLoading(false);
+    // if (!ok) {
+    //   setErrorMessage(errorMessage!);
+    //   setTimeout(() => setErrorMessage(''), 3000);
+    //   return;
+    // }
+    // // Si todo salió bien redirecciono a la page desde donde venia
+    // // sino viene con query redirecciono a la home
+    // router.replace(destintation); //No uso un push para que no pueda retornar a la pagina anterior
 
-    // Si todo salió bien redirecciono a la page desde donde venia
-    // sino viene con query redirecciono a la home
-    router.replace(destintation); //No uso un push para que no pueda retornar a la pagina anterior
+    //*Login con next-auth
+
+    await signIn('credentials', { email, password });
   };
 
   return (
@@ -99,16 +113,53 @@ const LoginPage = () => {
               </Button>
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} display='flex' justifyContent='end'>
               <NextLink href={`/auth/register?p=${destintation}`} passHref legacyBehavior>
                 <Link>¿ Dont{"'t"} have an account ?</Link>
               </NextLink>
+            </Grid>
+
+            <Grid item xs={12} display='flex' justifyContent='end' flexDirection='column'>
+              <Divider sx={{ width: '100%', mb: 2 }} />
+              {Object.values(providers).map((prov: any) => {
+                if (prov.id === 'credentials') return;
+
+                return (
+                  <Button
+                    key={prov.name}
+                    variant='outlined'
+                    fullWidth
+                    color='primary'
+                    sx={{ mb: 1 }}
+                    onClick={() => signIn(prov.id)}
+                  >
+                    {prov.name}
+                  </Button>
+                );
+              })}
             </Grid>
           </Grid>
         </Box>
       </form>
     </AuthLayout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+  const session = await getSession({ req });
+  const { p = '/' } = query;
+
+  if (session)
+    return {
+      redirect: {
+        destination: p.toString(),
+        permanent: false
+      }
+    };
+
+  return {
+    props: {}
+  };
 };
 
 export default LoginPage;

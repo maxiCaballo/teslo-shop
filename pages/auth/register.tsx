@@ -1,5 +1,7 @@
 import { useState, useContext } from 'react';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
+import { signIn, getSession } from 'next-auth/react';
 import NextLink from 'next/link';
 
 import { AuthLayout } from '@/components/layouts';
@@ -41,9 +43,11 @@ const RegisterPage = () => {
       return;
     }
 
-    // Si todo salió bien redirecciono a la page desde donde venia
-    // sino viene con query redirecciono a la home
-    router.replace(destintation); //No uso un push para que no pueda retornar a la pagina anterior
+    // // Si todo salió bien redirecciono a la page desde donde venia
+    // // sino viene con query redirecciono a la home
+    // router.replace(destintation); //No uso un push para que no pueda retornar a la pagina anterior
+
+    await signIn('credentials', { email, password });
   };
 
   return (
@@ -127,7 +131,7 @@ const RegisterPage = () => {
               </Button>
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} display='flex' justifyContent='end'>
               <NextLink href={`/auth/login?p=${destintation}`} passHref legacyBehavior>
                 <Link>¿ Do you have an account ?</Link>
               </NextLink>
@@ -137,6 +141,23 @@ const RegisterPage = () => {
       </form>
     </AuthLayout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+  const session = await getSession({ req });
+  const { p = '/' } = query;
+
+  if (session)
+    return {
+      redirect: {
+        destination: p.toString(),
+        permanent: false
+      }
+    };
+
+  return {
+    props: {}
+  };
 };
 
 export default RegisterPage;

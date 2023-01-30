@@ -16,7 +16,7 @@ export default NextAuth({
   // Configure one or more authentication providers
   providers: [
     Credentials({
-      name: '',
+      name: 'Custom login',
       //Expongo los inputs que necesite para authenticar el usuario
       credentials: {
         email: { label: 'Email', type: 'email', placeholder: 'email@....' },
@@ -38,6 +38,19 @@ export default NextAuth({
       clientSecret: process.env.GITHUB_SECRET!
     })
   ],
+
+  //Custom pages -> enlazo mis pages con nextAuth..
+  pages: {
+    signIn: '/auth/login',
+    newUser: '/auth/register'
+  },
+
+  //Configuraciones de la sesión
+  session: {
+    maxAge: 2592000, // 30 dias
+    strategy: 'jwt',
+    updateAge: 86400 // cada día
+  },
 
   callbacks: {
     //? el token viene undefined
