@@ -4,25 +4,25 @@ import { IProduct } from '../interfaces';
 const productSchema = new Schema(
   {
     description: { type: String, required: true },
-    images: [{ type: String }], //Array de strings
+    images : [{ type: String }], //Array de strings
     inStock: { type: Number, required: true, default: 0 },
-    price: { type: Number, required: true, default: 0 },
-    sizes: [
+    price  : { type: Number, required: true, default: 0 },
+    sizes  : [
       {
         type: String,
         enum: {
-          values: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
+          values : ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
           message: '{VALUE} is not a valid size', //Si hay error en el status envía este mensaje
         },
       },
     ],
-    slug: { type: String, required: true, unique: true },
-    tags: [{ type: String }],
-    title: { type: String, required: true },
-    type: {
+    slug  : { type: String, required: true, unique: true },
+    tags  : [{ type: String }],
+    title : { type: String, required: true },
+    type  : {
       type: String,
       enum: {
-        values: ['shirts', 'pants', 'hoodies', 'hats'],
+        values : ['shirts', 'pants', 'hoodies', 'hats'],
         message: '{VALUE} is not a valid type',
       },
     },

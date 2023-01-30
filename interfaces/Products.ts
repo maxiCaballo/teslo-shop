@@ -1,25 +1,25 @@
 //La interfaz lleva todas las propiedades que van a estar en la bd de mongo
 export interface IProduct {
-  _id: string;
+  _id        : string;
   description: string;
-  images: string[];
-  inStock: number;
-  price: number;
-  sizes: ISize[];
-  slug: string;
-  tags: string[];
-  title: string;
-  type: ITypes;
-  gender: IGender;
-  createdAt: string;
-  updatedAt: string;
+  images     : string[];
+  inStock    : number;
+  price      : number;
+  sizes      : ISize[];
+  slug       : string;
+  tags       : string[];
+  title      : string;
+  type       : ITypes;
+  gender     : IGender;
+  createdAt  : string;
+  updatedAt  : string;
 }
 export interface IProductHome {
-  images: string[];
+  images : string[];
   inStock: number;
-  price: number;
-  slug: string;
-  title: string;
+  price  : number;
+  slug   : string;
+  title  : string;
 }
 
 export type ISize = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';

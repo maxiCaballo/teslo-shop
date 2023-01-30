@@ -1,0 +1,53 @@
+import mongoose, { Model, Schema } from 'mongoose';
+import { IOrder } from '../interfaces';
+
+//prettier
+const orderSchema = new Schema(
+  {
+    user           : { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    orderItems     : [
+      {
+        _id     : { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+        title   : { type: String, required: true },
+        size    : { type: String,
+          enum:{
+            values : ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
+            message: '{VALUE} is not a valid size', 
+        }, 
+        required: true 
+      },
+        quantity: { type: Number, required: true },
+        slug    : { type: String, required: true },
+        image   : { type: String, required: true },
+        price   : { type: Number, required: true },
+      },
+    ],
+    shippingAddress: {
+      firstName: {type:String, required: true},
+      lastName : {type:String, required: true},
+      address  : {type:String, required: true},
+      address2 : {type:String},
+      zipCode  : {type:String, required: true},
+      city     : {type:String, required: true},
+      phone    : {type:String, required: true},
+      country  : {type:String, required: true},
+    },
+    paymentMethod  : { type:String, required: true},
+    orderSummary   : {
+      totalProducts: {type: Number, required: true},
+      subTotal     : {type: Number, required: true},
+      taxRate      : {type: Number, required: true},
+      total        : {type: Number, required: true},
+    },
+    isPaid: { type:Number, required: true},
+    paidAt: { type: String},
+  },
+  {
+    timestamps  : true,
+  }
+);
+
+const OrderModel: Model<IOrder> =
+  mongoose.models.User || mongoose.model("Order", orderSchema);
+
+export default OrderModel;

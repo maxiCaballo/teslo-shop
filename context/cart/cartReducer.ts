@@ -1,4 +1,4 @@
-import { ICartProduct, IOrderSummary, IShippingAddress } from '../../interfaces/cart';
+import { ICartProduct, IOrderSummary, IShippingAddress } from '../../interfaces';
 import { CartState } from './CartProvider';
 
 type CartActionType =

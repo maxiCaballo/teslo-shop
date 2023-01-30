@@ -1,7 +1,7 @@
 import { FC, useEffect, useReducer } from 'react';
 import { CartContext } from './CartContext';
 import { cartReducer } from './cartReducer';
-import { ICartProduct, IOrderSummary, IShippingAddress } from '../../interfaces/cart';
+import { ICartProduct, IOrderSummary, IShippingAddress } from '../../interfaces';
 import Cookie from 'js-cookie';
 
 //Interfaces
