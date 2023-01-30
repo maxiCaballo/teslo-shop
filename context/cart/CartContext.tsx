@@ -7,11 +7,15 @@ interface ContextProps {
   orderSummary: IOrderSummary;
   shippingAddress?: IShippingAddress;
   //Methods
+  //Cart
   addProduct: (product: ICartProduct) => void;
   updateProductCart: (product: ICartProduct) => void;
   updateProductCartQuantity: (product: ICartProduct) => void;
   removeProductCart: (product: ICartProduct) => void;
+  //Shipping address
   updateAddress: (address: IShippingAddress) => void;
+  //Order
+  createOrder: () => void;
 }
 
 export const CartContext = createContext({} as ContextProps);

@@ -10,7 +10,7 @@ import { Box, Button, Card, CardContent, Divider, Grid, Typography, Link } from 
 import { countries } from './address';
 
 const CheckoutSummaryPage = () => {
-  const { shippingAddress, cart } = useContext(CartContext);
+  const { shippingAddress, cart, createOrder } = useContext(CartContext);
   const router = useRouter();
 
   useEffect(() => {
@@ -23,6 +23,8 @@ const CheckoutSummaryPage = () => {
   if (!shippingAddress) return <></>;
 
   const country = countries.find((country) => country.code === shippingAddress.country);
+
+  const onCreateOrder = () => {};
 
   return (
     <ShopLayout title='Summary order page' pageDescription='Resume order page'>
@@ -84,7 +86,7 @@ const CheckoutSummaryPage = () => {
                 <OrderSummary />
 
                 <Box sx={{ mt: 3 }}>
-                  <Button color='secondary' className='circular-btn' fullWidth>
+                  <Button color='secondary' className='circular-btn' fullWidth onClick={() => createOrder}>
                     Confirm
                   </Button>
                 </Box>
