@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import { CartContext } from '../../context/cart/CartContext';
@@ -6,11 +6,13 @@ import Cookies from 'js-cookie';
 
 import { CartList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
-import { Box, Button, Card, CardContent, Divider, Grid, Typography, Link } from '@mui/material';
+import { Box, Button, Card, CardContent, Divider, Grid, Typography, Link, Chip } from '@mui/material';
 import { countries } from './address';
 
 const CheckoutSummaryPage = () => {
   const { shippingAddress, cart, createOrder } = useContext(CartContext);
+  const [isSendOrder, setIsSendOrder] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -24,8 +26,11 @@ const CheckoutSummaryPage = () => {
 
   const country = countries.find((country) => country.code === shippingAddress.country);
 
-  const onCreateOrder = () => {
-    createOrder();
+  const onCreateOrder = async () => {
+    setIsSendOrder(true);
+    const response = await createOrder(); //Todo verificar que hago si fue exitosa o no la creacion de la orden...
+    console.log(response);
+    setIsSendOrder(false);
   };
 
   return (
@@ -87,10 +92,17 @@ const CheckoutSummaryPage = () => {
 
                 <OrderSummary />
 
-                <Box sx={{ mt: 3 }}>
-                  <Button color='secondary' className='circular-btn' fullWidth onClick={onCreateOrder}>
+                <Box sx={{ mt: 3 }} display='flex' flexDirection='column' gap={2}>
+                  <Button
+                    color='secondary'
+                    className='circular-btn'
+                    fullWidth
+                    onClick={onCreateOrder}
+                    disabled={isSendOrder}
+                  >
                     Confirm
                   </Button>
+                  <Chip color='error' label={errorMessage} sx={{ display: errorMessage ? 'flex' : 'none' }} />
                 </Box>
               </CardContent>
             </Card>

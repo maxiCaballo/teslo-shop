@@ -4,26 +4,25 @@ import { getSession } from 'next-auth/react';
 import { IOrder, IOrderItem } from '../../../interfaces/Order';
 import { db } from '../../../database';
 
-type Data = { ok: boolean; errorMessage: string } | { ok: boolean; order?: IOrder };
+type Data = { errorMessage: string } | { newOrder: IOrder };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   switch (req.method) {
     case 'POST':
       return createOrder(req, res);
     default:
-      return res.status(400).json({ ok: false, errorMessage: 'Invalid http method' });
+      return res.status(400).json({ errorMessage: 'Invalid http method' });
   }
 }
 
 const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const session = await getSession({ req }); //El token viaja en la cookie
 
-  if (!session) return res.status(401).json({ ok: false, errorMessage: 'Must be authenticated!' });
+  if (!session) return res.status(401).json({ errorMessage: 'Must be authenticated!' });
 
   const {
     orderItems,
-    orderSummary: { total: frontendTotal },
-    orderSummary
+    orderSummary: { total: frontendTotal }
   } = req.body as IOrder;
 
   const productsId: string[] = orderItems.map((product) => product._id);
@@ -33,7 +32,7 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   await db.disconnect();
 
   if (!dbProducts.length || orderItems.length !== dbProducts.length)
-    res.status(400).json({ ok: false, errorMessage: 'Check the cart product again...' });
+    res.status(400).json({ errorMessage: 'Check the cart product again...' });
 
   try {
     const subTotal = orderItems.reduce((acc, curr) => {
@@ -61,9 +60,9 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     });
     await newOrder.save();
 
-    return res.status(201).json({ ok: true, order: newOrder });
+    return res.status(201).json({ newOrder });
   } catch (error) {
     console.log(error);
-    return res.status(400).json({ ok: false, errorMessage: 'Total ammount not match ' });
+    return res.status(400).json({ errorMessage: 'Total ammount not match ' });
   }
 };

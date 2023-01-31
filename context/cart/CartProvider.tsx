@@ -4,6 +4,7 @@ import { cartReducer } from './cartReducer';
 import { ICartProduct, IOrder, IOrderSummary, IShippingAddress } from '../../interfaces';
 import Cookie from 'js-cookie';
 import { teslo_Api } from '@/api';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 
 //Interfaces
 export interface CartState {
@@ -12,10 +13,8 @@ export interface CartState {
   orderSummary: IOrderSummary;
   shippingAddress?: IShippingAddress;
 }
-
-type Props = {
-  children: React.ReactElement;
-};
+//Respuesta del front
+export type OrderResponse = { ok: boolean; errorMessage?: string; order?: string };
 
 const CART_INITIAL_STATE: CartState = {
   isLoaded: false,
@@ -27,6 +26,10 @@ const CART_INITIAL_STATE: CartState = {
     total: 0
   },
   shippingAddress: undefined
+};
+
+type Props = {
+  children: React.ReactElement;
 };
 
 export const CartProvider: FC<Props> = ({ children }) => {
@@ -123,7 +126,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
     dispatch({ type: 'UpdateAddress', payload: address });
   };
   //Order
-  const createOrder = async () => {
+  const createOrder = async (): Promise<OrderResponse> => {
     if (!state.shippingAddress) throw new Error('There is not shipping address');
 
     const products = state.cart.map((p) => ({ ...p, size: p.size! }));
@@ -138,10 +141,19 @@ export const CartProvider: FC<Props> = ({ children }) => {
     };
 
     try {
-      const { data } = await teslo_Api.post('/order', body);
-      console.log(data);
+      const { data } = await teslo_Api.post<{ newOrder: IOrder }>('/order', body);
+
+      return {
+        ok: true,
+        order: data.newOrder._id
+      };
     } catch (error) {
-      console.log(error);
+      if (axios.isAxiosError(error)) return { ok: false, errorMessage: error.response?.data.errorMessage };
+
+      return {
+        ok: false,
+        errorMessage: 'Sorry, there was an error!'
+      };
     }
   };
 

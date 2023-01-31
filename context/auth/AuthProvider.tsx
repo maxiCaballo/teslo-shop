@@ -14,11 +14,7 @@ export interface AuthState {
   user?: ILoggedUser;
 }
 
-type Props = {
-  children: React.ReactElement;
-};
-
-export type Response = {
+type Response = {
   ok: boolean;
   errorMessage?: string;
   user?: ILoggedUser;
@@ -27,6 +23,10 @@ export type Response = {
 const AUTH_INITIAL_STATE: AuthState = {
   isLogged: false,
   user: undefined
+};
+
+type Props = {
+  children: React.ReactElement;
 };
 
 export const AuthProvider: FC<Props> = ({ children }) => {
@@ -38,8 +38,6 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     if (status === 'authenticated' && data.user) {
       dispatch({ type: 'Login', payload: data.user as ILoggedUser });
     }
-    console.log(data?.user);
-    console.log(data?.accessToken);
   }, [status, data]);
 
   //Chequeo del token generado por nosotros y si es valido guardo el usuario en el estado...
