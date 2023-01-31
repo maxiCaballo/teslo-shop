@@ -72,7 +72,7 @@ export const CartProvider: FC<Props> = ({ children }) => {
       totalProducts,
       subTotal,
       taxRate: subTotal * taxRate,
-      total: Number((subTotal * (taxRate + 1)).toFixed(2))
+      total: Number(subTotal * (taxRate + 1))
     };
     dispatch({ type: 'UpdateOrderSummary', payload: OrderSummary });
   }, [state.cart]);
@@ -125,7 +125,6 @@ export const CartProvider: FC<Props> = ({ children }) => {
   //Order
   const createOrder = async () => {
     if (!state.shippingAddress) throw new Error('There is not shipping address');
-    console.log('Entré acá');
 
     const products = state.cart.map((p) => ({ ...p, size: p.size! }));
 
@@ -134,7 +133,8 @@ export const CartProvider: FC<Props> = ({ children }) => {
       orderItems: products,
       shippingAddress: state.shippingAddress,
       orderSummary: state.orderSummary,
-      isPaid: false
+      isPaid: false,
+      paymentMethod: 'paypal'
     };
 
     try {

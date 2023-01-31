@@ -22,7 +22,6 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
   const {
     orderItems,
-    shippingAddress,
     orderSummary: { total: frontendTotal },
     orderSummary
   } = req.body as IOrder;
@@ -49,12 +48,13 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     if (frontendTotal.toFixed(2) !== backendTotal.toFixed(2)) throw new Error('Total ammount not match ');
 
     //*Si llego hasta acá es que todo está bien...
+
     const userId = session.user._id;
     console.log(orderItems);
+    //Mongoose ignora si el usuario manda campos que no están definidos en el modelo..
+    //Is paid false por las dudas que el cliente modifique ese campo...
     const newOrder = new Order({
-      orderItems,
-      shippingAddress,
-      orderSummary,
+      ...req.body,
       isPaid: false,
       paymentMethod: 'paypal',
       user: userId

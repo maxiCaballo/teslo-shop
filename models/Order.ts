@@ -19,7 +19,7 @@ const orderSchema = new Schema(
         quantity: { type: Number, required: true },
         slug    : { type: String, required: true },
         images  : [{ type: String, required: true }],
-        price   : { type: Boolean, required: true },
+        price   : { type: Number, required: true },
       },
     ],
     shippingAddress: {
@@ -39,7 +39,7 @@ const orderSchema = new Schema(
       taxRate      : {type: Number, required: true},
       total        : {type: Number, required: true},
     },
-    isPaid: { type:Number, required: true},
+    isPaid: { type:Boolean, required: true},
     paidAt: { type: String},
   },
   {
