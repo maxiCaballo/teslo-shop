@@ -24,7 +24,9 @@ const CheckoutSummaryPage = () => {
 
   const country = countries.find((country) => country.code === shippingAddress.country);
 
-  const onCreateOrder = () => {};
+  const onCreateOrder = () => {
+    createOrder();
+  };
 
   return (
     <ShopLayout title='Summary order page' pageDescription='Resume order page'>
@@ -86,7 +88,7 @@ const CheckoutSummaryPage = () => {
                 <OrderSummary />
 
                 <Box sx={{ mt: 3 }}>
-                  <Button color='secondary' className='circular-btn' fullWidth onClick={() => createOrder}>
+                  <Button color='secondary' className='circular-btn' fullWidth onClick={onCreateOrder}>
                     Confirm
                   </Button>
                 </Box>

@@ -1,7 +1,7 @@
 import { FC, useEffect, useReducer } from 'react';
 import { CartContext } from './CartContext';
 import { cartReducer } from './cartReducer';
-import { ICartProduct, IOrderSummary, IShippingAddress } from '../../interfaces';
+import { ICartProduct, IOrder, IOrderSummary, IShippingAddress } from '../../interfaces';
 import Cookie from 'js-cookie';
 import { teslo_Api } from '@/api';
 
@@ -124,9 +124,22 @@ export const CartProvider: FC<Props> = ({ children }) => {
   };
   //Order
   const createOrder = async () => {
+    if (!state.shippingAddress) throw new Error('There is not shipping address');
+    console.log('Entré acá');
+
+    const products = state.cart.map((p) => ({ ...p, size: p.size! }));
+
+    //todo: implementar payment method
+    const body: IOrder = {
+      orderItems: products,
+      shippingAddress: state.shippingAddress,
+      orderSummary: state.orderSummary,
+      isPaid: false
+    };
+
     try {
-      //todo: rellenar el payload
-      const { data } = await teslo_Api.post('/order', {});
+      const { data } = await teslo_Api.post('/order', body);
+      console.log(data);
     } catch (error) {
       console.log(error);
     }

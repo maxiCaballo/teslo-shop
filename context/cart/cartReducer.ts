@@ -23,15 +23,15 @@ export const cartReducer = (state: CartState, action: CartActionType): CartState
         cart: [...state.cart, action.payload]
       };
     case 'Update':
-      //Busco en el carrito el indice del elemento que me pasan en el payload por talle.
-      const index = state.cart.findIndex(({ size }) => action.payload.size === size);
+      //Busco en el carrito el indice del elemento que me pasan en el payload por talle y id.
+      const index = state.cart.findIndex(({ _id, size }) => action.payload.size === size && action.payload._id === _id);
       //Me genero una copia del estado.
-      const stateCartCopy = { ...state };
+      const stateCartCopy = [...state.cart];
       //Borro el producto que estaba antes y agrego el nuevo actualizado en la misma posicion.
-      stateCartCopy.cart.splice(index, 1, action.payload);
+      stateCartCopy.splice(index, 1, action.payload);
       return {
         ...state,
-        cart: [...stateCartCopy.cart]
+        cart: [...stateCartCopy]
       };
     case 'UpdateQuantity':
       return {

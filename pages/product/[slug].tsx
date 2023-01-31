@@ -1,10 +1,5 @@
 import { useContext, useState } from 'react';
-import {
-  GetServerSideProps,
-  GetStaticPaths,
-  GetStaticProps,
-  NextPage,
-} from 'next';
+import { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 
 import { CartContext } from '../../context/cart/CartContext';
@@ -22,13 +17,13 @@ type Props = {
 const ProductPage: NextPage<Props> = ({ product }) => {
   const [tempProductCart, setTempProductCart] = useState<ICartProduct>({
     _id: product._id,
-    images: product.images[0],
+    images: product.images,
     price: product.price,
     size: undefined,
     slug: product.slug,
     title: product.title,
     gender: product.gender,
-    quantity: 1,
+    quantity: 1
   });
 
   const router = useRouter();
@@ -42,15 +37,15 @@ const ProductPage: NextPage<Props> = ({ product }) => {
     if (value > 0 && value <= product.inStock)
       setTempProductCart((currentValue) => ({
         ...currentValue,
-        quantity: value,
+        quantity: value
       }));
   };
 
   //* Methods for upadte the state
   const onAddProduct = () => {
-    if (!tempProductCart.size) return;
+    if (!tempProductCart.size) return; //Si el usuario no selecciona tamaño..
 
-    const existInCart = cart.find(({ size }) => size === tempProductCart.size);
+    const existInCart = cart.find(({ _id, size }) => size === tempProductCart.size && _id === tempProductCart._id);
     console.log(existInCart);
 
     if (!existInCart) {
@@ -63,58 +58,43 @@ const ProductPage: NextPage<Props> = ({ product }) => {
   };
 
   return (
-    <ShopLayout title="Product page" pageDescription={product.description}>
+    <ShopLayout title='Product page' pageDescription={product.description}>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={7}>
           {/* SlideShow */}
           <ProductSlideShow images={product.images} />
         </Grid>
         <Grid item xs={12} sm={5}>
-          <Box display="flex" flexDirection="column">
+          <Box display='flex' flexDirection='column'>
             {/*Title  */}
-            <Typography variant="h1" component="h1">
+            <Typography variant='h1' component='h1'>
               {product.title}
             </Typography>
 
             {/* Price */}
-            <Typography variant="subtitle1" component="h2">
+            <Typography variant='subtitle1' component='h2'>
               ${product.price}
             </Typography>
 
             {/* Quantity */}
             <Box sx={{ my: 2 }}>
-              <Typography variant="subtitle2">Quantity</Typography>
-              <ItemCounter
-                currentValue={tempProductCart.quantity}
-                updatedQuantity={updatedQuantity}
-              />
-              <SizeSelector
-                sizes={product.sizes}
-                selectedSize={tempProductCart.size}
-                onSelectedSize={onSelectedSize}
-              />
+              <Typography variant='subtitle2'>Quantity</Typography>
+              <ItemCounter currentValue={tempProductCart.quantity} updatedQuantity={updatedQuantity} />
+              <SizeSelector sizes={product.sizes} selectedSize={tempProductCart.size} onSelectedSize={onSelectedSize} />
             </Box>
 
             {/* Btn add cart */}
             {product.inStock > 0 ? (
-              <Button
-                color="secondary"
-                className="circular-btn"
-                onClick={onAddProduct}
-              >
+              <Button color='secondary' className='circular-btn' onClick={onAddProduct}>
                 {tempProductCart.size ? 'Add to cart' : 'select a size'}
               </Button>
             ) : (
-              <Chip
-                label="Product not available"
-                color="error"
-                variant="outlined"
-              />
+              <Chip label='Product not available' color='error' variant='outlined' />
             )}
 
             <Box sx={{ mt: 3 }}>
-              <Typography variant="subtitle2">Description</Typography>
-              <Typography variant="body2">{product.description}</Typography>
+              <Typography variant='subtitle2'>Description</Typography>
+              <Typography variant='body2'>{product.description}</Typography>
             </Box>
           </Box>
         </Grid>
@@ -166,14 +146,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return {
       redirect: {
         destination: '/404',
-        permanent: false,
-      },
+        permanent: false
+      }
     };
 
   return {
     props: {
-      product,
-    },
+      product
+    }
   };
 };
 

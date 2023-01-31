@@ -7,7 +7,11 @@ import { CartList, OrderSummary } from '@/components/cart';
 import { Box, Button, Card, CardContent, Divider, Grid, Typography } from '@mui/material';
 
 const CartPage = () => {
-  const { isLoaded, cart } = useContext(CartContext);
+  const {
+    isLoaded,
+    cart,
+    orderSummary: { totalProducts }
+  } = useContext(CartContext);
   const router = useRouter();
 
   useEffect(() => {
@@ -20,7 +24,7 @@ const CartPage = () => {
   if (!isLoaded || cart.length === 0) return <></>;
 
   return (
-    <ShopLayout title='cart page - (3)' pageDescription='Cart page'>
+    <ShopLayout title={`cart page - (${totalProducts})`} pageDescription='Cart page'>
       <>
         <Typography variant='h1' component='h1' sx={{ mb: 2 }}>
           Cart

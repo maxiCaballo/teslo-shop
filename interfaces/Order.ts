@@ -3,13 +3,13 @@ import { ISize } from './Products';
 
 export interface IOrder {
   _id?           : string;
-  user           : IUser | string; // El IUser es para poder hacer un populate y traer toda la info del user, el objeto completo
+  user?           : IUser | string; // El IUser es para poder hacer un populate y traer toda la info del user, el objeto completo
   orderItems     : IOrderItem[];
   shippingAddress: IShippingAddress;
   paymentMethod? : string;
   orderSummary   : IOrderSummary;
   isPaid         : boolean;
-  paidAt         : string;
+  paidAt?         : string;
 }
 
 export interface IOrderItem {
@@ -18,7 +18,8 @@ export interface IOrderItem {
   size    : ISize;
   quantity: number;
   slug    : string;
-  image   : string;
+  images  : string[];
+  gender  : string;
   price   : number; //Para guardar el precio en el momento de la compra, porque en un futuro podría subir
 }
 export interface IShippingAddress {

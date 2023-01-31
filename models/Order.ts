@@ -18,8 +18,8 @@ const orderSchema = new Schema(
       },
         quantity: { type: Number, required: true },
         slug    : { type: String, required: true },
-        image   : { type: String, required: true },
-        price   : { type: Number, required: true },
+        images  : [{ type: String, required: true }],
+        price   : { type: Boolean, required: true },
       },
     ],
     shippingAddress: {
@@ -48,6 +48,6 @@ const orderSchema = new Schema(
 );
 
 const OrderModel: Model<IOrder> =
-  mongoose.models.User || mongoose.model("Order", orderSchema);
+  mongoose.models.Order || mongoose.model("Order", orderSchema);
 
 export default OrderModel;
