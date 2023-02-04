@@ -14,7 +14,7 @@ export interface CartState {
   shippingAddress?: IShippingAddress;
 }
 //Respuesta del front
-export type OrderResponse = { ok: boolean; errorMessage?: string; order?: string };
+export type OrderResponse = { ok: boolean; errorMessage?: string; orderId?: string };
 
 const CART_INITIAL_STATE: CartState = {
   isLoaded: false,
@@ -143,9 +143,11 @@ export const CartProvider: FC<Props> = ({ children }) => {
     try {
       const { data } = await teslo_Api.post<{ newOrder: IOrder }>('/order', body);
 
+      dispatch({ type: 'ReloadCart' });
+
       return {
         ok: true,
-        order: data.newOrder._id
+        orderId: data.newOrder._id
       };
     } catch (error) {
       if (axios.isAxiosError(error)) return { ok: false, errorMessage: error.response?.data.errorMessage };

@@ -11,7 +11,7 @@ import { countries } from './address';
 
 const CheckoutSummaryPage = () => {
   const { shippingAddress, cart, createOrder } = useContext(CartContext);
-  const [isSendOrder, setIsSendOrder] = useState(false);
+  const [isSendOrder, setIsSendOrder] = useState(false); //Para deshabilitar el boton mientras se esta enviando la orden al back...
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
 
@@ -28,9 +28,17 @@ const CheckoutSummaryPage = () => {
 
   const onCreateOrder = async () => {
     setIsSendOrder(true);
-    const response = await createOrder(); //Todo verificar que hago si fue exitosa o no la creacion de la orden...
-    console.log(response);
-    setIsSendOrder(false);
+    const { ok, orderId, errorMessage: message } = await createOrder(); //Todo verificar que hago si fue exitosa o no la creacion de la orden...
+
+    console.log(ok, orderId, message);
+
+    if (!ok) {
+      setIsSendOrder(false);
+      setErrorMessage(message!);
+      setTimeout(() => setErrorMessage(''), 4000);
+    } else {
+      router.replace(`/order/${orderId}`);
+    }
   };
 
   return (

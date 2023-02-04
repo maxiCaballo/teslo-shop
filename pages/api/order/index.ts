@@ -31,8 +31,7 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const dbProducts = await Product.find({ _id: { $in: productsId } });
   await db.disconnect();
 
-  if (!dbProducts.length || orderItems.length !== dbProducts.length)
-    res.status(400).json({ errorMessage: 'Check the cart product again...' });
+  if (!dbProducts.length) return res.status(400).json({ errorMessage: 'Check the cart product again...' });
 
   try {
     const subTotal = orderItems.reduce((acc, curr) => {
@@ -49,7 +48,6 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     //*Si llego hasta acá es que todo está bien...
 
     const userId = session.user._id;
-    console.log(orderItems);
     //Mongoose ignora si el usuario manda campos que no están definidos en el modelo..
     //Is paid false por las dudas que el cliente modifique ese campo...
     const newOrder = new Order({

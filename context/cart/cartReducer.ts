@@ -8,6 +8,7 @@ type CartActionType =
   | { type: 'UpdateQuantity'; payload: ICartProduct }
   | { type: 'Read and set cart from cookie'; payload: ICartProduct[] }
   | { type: 'Remove'; payload: ICartProduct }
+  | { type: 'ReloadCart' }
   //Shipping address
   | { type: 'UpdateAddress'; payload: IShippingAddress }
   | { type: 'LoadAddressFromCookies'; payload: IShippingAddress }
@@ -55,6 +56,19 @@ export const cartReducer = (state: CartState, action: CartActionType): CartState
           if (product._id !== action.payload._id || product.size !== action.payload.size) return product;
         })
       };
+    case 'ReloadCart':
+      return {
+        ...state,
+        cart: [],
+        orderSummary: {
+          totalProducts: 0,
+          subTotal: 0,
+          taxRate: 0,
+          total: 0
+        },
+        shippingAddress: undefined
+      };
+
     //Shipping address
     case 'UpdateAddress':
       return {

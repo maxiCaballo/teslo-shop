@@ -30,6 +30,7 @@ export async function middleware(req: NextRequest, res: NextResponse, event: Nex
 }
 
 //Solo se va a ejecutar el middleware si hace match con ese path.
+// const regex = /^\/checkout\/(address|summary)$/;
 
 export const config = {
   matcher: ['/checkout/address', '/checkout/summary']
