@@ -16,10 +16,11 @@ const orderSchema = new Schema(
         }, 
         required: true 
       },
-        quantity: { type: Number, required: true },
-        slug    : { type: String, required: true },
+        quantity: {  type: Number, required: true },
+        slug    : {  type: String, required: true },
         images  : [{ type: String, required: true }],
-        price   : { type: Number, required: true },
+        price   : {  type: Number, required: true },
+        gender  : {  type: String, required: true}
       },
     ],
     shippingAddress: {

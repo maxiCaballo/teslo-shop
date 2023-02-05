@@ -30,8 +30,6 @@ const CheckoutSummaryPage = () => {
     setIsSendOrder(true);
     const { ok, orderId, errorMessage: message } = await createOrder(); //Todo verificar que hago si fue exitosa o no la creacion de la orden...
 
-    console.log(ok, orderId, message);
-
     if (!ok) {
       setIsSendOrder(false);
       setErrorMessage(message!);

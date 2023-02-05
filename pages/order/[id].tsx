@@ -1,98 +1,79 @@
 import { GetServerSideProps, NextPage } from 'next';
-import NextLink from 'next/link';
 import { getSession } from 'next-auth/react';
 import { dbOrders } from '@/database';
 import { CartList, OrderSummary } from '@/components/cart';
 import { ShopLayout } from '@/components/layouts';
-import { Box, Button, Card, CardContent, Chip, Divider, Grid, Link, Typography } from '@mui/material';
+import { Box, Card, CardContent, Chip, Divider, Grid, Typography } from '@mui/material';
 import { CreditCardOffOutlined, CreditScoreOutlined } from '@mui/icons-material';
 import { IOrder } from '@/interfaces';
+import { countries } from '../checkout/address';
 
 type Props = {
   order: IOrder;
 };
 
 const OrderPage: NextPage<Props> = ({ order }) => {
-  console.log({ order });
-
+  const {
+    orderSummary,
+    shippingAddress: { firstName, lastName, address, zipCode, city, phone, country: countryCode },
+    orderItems
+  } = order;
+  const country = countries.find((country) => country.code === countryCode);
   return (
     <ShopLayout title='Order page' pageDescription='Resume order page'>
       <>
         <Typography variant='h1' component='h1' sx={{ mb: 2 }}>
-          Order: ABC123
+          Order: {order._id}
         </Typography>
 
-        {/* Si no esta paga */}
-        {/* <Chip
-          sx={{ my: 2 }}
-          label="Pending payment"
-          variant="outlined"
-          color="error"
-          icon={<CreditCardOffOutlined />}
-        /> */}
-        {/* Si esta paga */}
-        <Chip sx={{ my: 2 }} label='Paid' variant='outlined' color='success' icon={<CreditScoreOutlined />} />
+        {chipByOrderPaid(order.isPaid)}
 
         <Grid container spacing={1}>
           <Grid item xs={12} sm={7}>
-            {/* CardList */}
-            <CartList />
+            <CartList orderItems={orderItems} />
           </Grid>
 
           <Grid item xs={12} sm={5}>
             <Card className='summary-card' sx={{ backgroundColor: '#f7f7f7' }}>
               <CardContent>
-                <Typography variant='h2'>{`Resume: products (3)`}</Typography>
+                <Typography variant='h2'>{`Resume: products ${orderSummary.totalProducts}`}</Typography>
 
                 <Divider sx={{ my: 1 }} />
 
                 <Grid container>
-                  <Grid item xs={6}>
+                  <Grid item xs={6} sx={{ mb: 2 }}>
                     <Typography variant='subtitle1'>Delivery address</Typography>
-                  </Grid>
-                  <Grid item xs={6} display='flex' justifyContent='end'>
-                    <NextLink href='/checkout/address' passHref legacyBehavior>
-                      <Link underline='always'>Edit</Link>
-                    </NextLink>
                   </Grid>
 
                   <Grid item xs={12} sx={{ mb: 1 }}>
-                    <Typography>Maximiliano caballo</Typography>
+                    <Typography>
+                      {firstName} {lastName}
+                    </Typography>
                   </Grid>
                   <Grid item xs={12} sx={{ mb: 1 }}>
-                    <Typography>323 some place</Typography>
+                    <Typography>
+                      {city} - {zipCode}
+                    </Typography>
                   </Grid>
                   <Grid item xs={12} sx={{ mb: 1 }}>
-                    <Typography>Sittisville, HYA 23S</Typography>
+                    <Typography>{address}</Typography>
                   </Grid>
                   <Grid item xs={12} sx={{ mb: 1 }}>
-                    <Typography>Canadá</Typography>
+                    <Typography>{country?.name}</Typography>
                   </Grid>
                   <Grid item xs={12} sx={{ mb: 1 }}>
-                    <Typography>+598 1234586</Typography>
+                    <Typography>{phone}</Typography>
                   </Grid>
                 </Grid>
 
                 <Divider sx={{ my: 1 }} />
 
-                <Grid item xs={12} display='flex' justifyContent='end' sx={{ mb: 1 }}>
-                  <NextLink href='/cart' passHref legacyBehavior>
-                    <Link underline='always'>Edit</Link>
-                  </NextLink>
-                </Grid>
-
-                <OrderSummary />
+                <OrderSummary orderSummary={orderSummary} />
 
                 <Box sx={{ mt: 3 }}>
                   {/*TODO */}
                   <h2>Pay</h2>
-                  <Chip
-                    sx={{ my: 2 }}
-                    label='Pending payment'
-                    variant='outlined'
-                    color='error'
-                    icon={<CreditCardOffOutlined />}
-                  />
+                  {chipByOrderPaid(order.isPaid)}
                 </Box>
               </CardContent>
             </Card>
@@ -100,6 +81,14 @@ const OrderPage: NextPage<Props> = ({ order }) => {
         </Grid>
       </>
     </ShopLayout>
+  );
+};
+
+const chipByOrderPaid = (isPaid: boolean) => {
+  return isPaid ? (
+    <Chip sx={{ my: 2 }} label='Paid' variant='outlined' color='success' icon={<CreditScoreOutlined />} />
+  ) : (
+    <Chip sx={{ my: 2 }} label='Pending payment' variant='outlined' color='error' icon={<CreditCardOffOutlined />} />
   );
 };
 
