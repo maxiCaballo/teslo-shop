@@ -28,7 +28,7 @@ const OrderPage: NextPage<Props> = ({ order }) => {
 
         {chipByOrderPaid(order.isPaid)}
 
-        <Grid container spacing={1}>
+        <Grid container spacing={1} className='fadeIn'>
           <Grid item xs={12} sm={7}>
             <CartList orderItems={orderItems} />
           </Grid>
@@ -70,10 +70,8 @@ const OrderPage: NextPage<Props> = ({ order }) => {
 
                 <OrderSummary orderSummary={orderSummary} />
 
-                <Box sx={{ mt: 3 }}>
-                  {/*TODO */}
-                  <h2>Pay</h2>
-                  {chipByOrderPaid(order.isPaid)}
+                <Box sx={{ mt: 3 }} display='flex' flexDirection='column'>
+                  {order.isPaid ? chipByOrderPaid(true) : <h2>Pay</h2>}
                 </Box>
               </CardContent>
             </Card>
