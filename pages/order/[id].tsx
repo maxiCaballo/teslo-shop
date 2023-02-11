@@ -1,5 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { getSession } from 'next-auth/react';
+import { PayPalButtons } from '@paypal/react-paypal-js';
+
 import { dbOrders } from '@/database';
 import { CartList, OrderSummary } from '@/components/cart';
 import { ShopLayout } from '@/components/layouts';
@@ -71,7 +73,7 @@ const OrderPage: NextPage<Props> = ({ order }) => {
                 <OrderSummary orderSummary={orderSummary} />
 
                 <Box sx={{ mt: 3 }} display='flex' flexDirection='column'>
-                  {order.isPaid ? chipByOrderPaid(true) : <h2>Pay</h2>}
+                  {order.isPaid ? chipByOrderPaid(true) : <PayPalButtons />}
                 </Box>
               </CardContent>
             </Card>

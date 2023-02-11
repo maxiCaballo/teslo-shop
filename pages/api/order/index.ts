@@ -48,7 +48,8 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     //*Si llego hasta acá es que todo está bien...
 
     const userId = session.user._id;
-    //Mongoose ignora si el usuario manda campos que no están definidos en el modelo..
+    //Mongoose ignora si el usuario manda campos que no están definidos en el modelo por eso puedo hacer el spread
+    //del req.body..
     //Is paid false por las dudas que el cliente modifique ese campo...
     const newOrder = new Order({
       ...req.body,
@@ -56,6 +57,8 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
       paymentMethod: 'paypal',
       user: userId
     });
+    //Redondeo el total
+    newOrder.orderSummary.total = Math.round(newOrder.orderSummary.total * 100) / 100;
     await newOrder.save();
 
     return res.status(201).json({ newOrder });

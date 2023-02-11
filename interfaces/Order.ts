@@ -3,13 +3,14 @@ import { ISize } from './Products';
 
 export interface IOrder {
   _id?           : string;
-  user?           : IUser | string; // El IUser es para poder hacer un populate y traer toda la info del user, el objeto completo
+  user?          : IUser | string; // El IUser es para poder hacer un populate y traer toda la info del user, el objeto completo
   orderItems     : IOrderItem[];
   shippingAddress: IShippingAddress;
   paymentMethod? : string;
   orderSummary   : IOrderSummary;
   isPaid         : boolean;
-  paidAt?         : string;
+  paidAt?        : string;
+  transactionId? : string
 }
 
 export interface IOrderItem {
