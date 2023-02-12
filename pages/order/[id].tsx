@@ -20,6 +20,7 @@ const OrderPage: NextPage<Props> = ({ order }) => {
     shippingAddress: { firstName, lastName, address, zipCode, city, phone, country: countryCode },
     orderItems
   } = order;
+
   const country = countries.find((country) => country.code === countryCode);
   return (
     <ShopLayout title='Order page' pageDescription='Resume order page'>
@@ -73,7 +74,31 @@ const OrderPage: NextPage<Props> = ({ order }) => {
                 <OrderSummary orderSummary={orderSummary} />
 
                 <Box sx={{ mt: 3 }} display='flex' flexDirection='column'>
-                  {order.isPaid ? chipByOrderPaid(true) : <PayPalButtons />}
+                  {order.isPaid ? (
+                    chipByOrderPaid(true)
+                  ) : (
+                    <PayPalButtons
+                      createOrder={(data, actions) => {
+                        return actions.order.create({
+                          purchase_units: [
+                            {
+                              amount: {
+                                value: `${orderSummary.total}`
+                              }
+                            }
+                          ]
+                        });
+                      }}
+                      onApprove={(data, actions) => {
+                        return actions.order!.capture().then((details) => {
+                          console.log({ details });
+
+                          const name = details.payer.name!.given_name;
+                          alert(`Transaction completed by ${name}`);
+                        });
+                      }}
+                    />
+                  )}
                 </Box>
               </CardContent>
             </Card>
