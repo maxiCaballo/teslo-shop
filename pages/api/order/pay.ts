@@ -50,7 +50,7 @@ const payOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
   if (!paypalBearerToken) return res.status(400).json({ message: 'Paypal token error' });
 
-  const { transactionId = '', orderId = '' } = req.body;
+  const { transactionId = '', orderId = '' } = req.body; //El cliente me envía estos datos, el transactionId se lo recibió de paypal...
   const URL_Paypal_Order = `${process.env.PAYPAL_ORDERS_URL || ''}/${transactionId}`;
 
   const { data } = await axios.get<IPaypalOrderResponse>(URL_Paypal_Order, {
@@ -83,6 +83,8 @@ const payOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   return res.status(200).json({ message: 'Ok!' });
 };
 
-//getPaypalBearerToken -> Le envío a paypal las credenciales que el me proporcionó para autenticarme que son el client_id y el access_token
-//y el me devuelve un token y con ese token basicamente le puedo preguntar 'ya estoy autenticado, no me pasas esta compra?' y ahi chequeo la compra
+//*getPaypalBearerToken
+//Le envío a paypal las credenciales que el me proporcionó para autenticarme que son el client_id y el access_token utilizando el tipo de authorizacion
+// "basic auth" y le especificamos que le vamos a mandar las credenciales a traves del body el cual está en un formato x-www-form-urlencoded.
+//Me devuelve un token y con ese token basicamente le puedo preguntar 'ya estoy autenticado, no me pasas esta compra?' y ahi chequeo la compra
 //que me devuelve con la orden que generé en la base de datos.

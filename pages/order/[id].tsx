@@ -5,23 +5,50 @@ import { PayPalButtons } from '@paypal/react-paypal-js';
 import { dbOrders } from '@/database';
 import { CartList, OrderSummary } from '@/components/cart';
 import { ShopLayout } from '@/components/layouts';
-import { Box, Card, CardContent, Chip, Divider, Grid, Typography } from '@mui/material';
+import { Box, Card, CardContent, Chip, CircularProgress, Divider, Grid, Typography } from '@mui/material';
 import { CreditCardOffOutlined, CreditScoreOutlined } from '@mui/icons-material';
 import { IOrder } from '@/interfaces';
 import { countries } from '../checkout/address';
+import tesloAPI from '@/api/tesloApi';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 type Props = {
   order: IOrder;
 };
 
+type OrderResponseBody = {
+  id: string;
+  status: 'COMPLETED' | 'SAVED' | 'APPROVED' | 'VOIDED' | 'PAYER_ACTION_REQUIRED';
+};
+
 const OrderPage: NextPage<Props> = ({ order }) => {
+  const [isPaying, setIsPaying] = useState(false);
+  const router = useRouter();
+
   const {
+    _id,
     orderSummary,
     shippingAddress: { firstName, lastName, address, zipCode, city, phone, country: countryCode },
     orderItems
   } = order;
 
   const country = countries.find((country) => country.code === countryCode);
+
+  const onOrderComplete = async (details: OrderResponseBody) => {
+    if (details.status !== 'COMPLETED') return alert('Paypal error: We could not process your payment');
+    setIsPaying(true);
+    try {
+      const { data } = await tesloAPI.post('/order/pay', { transactionId: details.id, orderId: _id });
+
+      //Como es ssr vuelve a hacer la solicitud de la orden al back y si esta pagada no me muestra los botones
+      //de paypal sino un chip con el mensaje de que ya fue paga.
+      router.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <ShopLayout title='Order page' pageDescription='Resume order page'>
       <>
@@ -73,7 +100,10 @@ const OrderPage: NextPage<Props> = ({ order }) => {
 
                 <OrderSummary orderSummary={orderSummary} />
 
-                <Box sx={{ mt: 3 }} display='flex' flexDirection='column'>
+                <Box display='flex' justifyContent='center' sx={{ display: isPaying ? 'flex' : 'none' }}>
+                  <CircularProgress />
+                </Box>
+                <Box sx={{ mt: 3, display: isPaying ? 'none' : 'flex' }} display='flex' flexDirection='column'>
                   {order.isPaid ? (
                     chipByOrderPaid(true)
                   ) : (
@@ -92,9 +122,7 @@ const OrderPage: NextPage<Props> = ({ order }) => {
                       onApprove={(data, actions) => {
                         return actions.order!.capture().then((details) => {
                           console.log({ details });
-
-                          const name = details.payer.name!.given_name;
-                          alert(`Transaction completed by ${name}`);
+                          onOrderComplete(details);
                         });
                       }}
                     />
