@@ -104,58 +104,58 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 };
 
 //* SSG
-// export const getStaticPaths: GetStaticPaths = async () => {
-//   const slugs = await dbProducts.getAllProductsWithSlug();
+export const getStaticPaths: GetStaticPaths = async () => {
+  const slugs = await dbProducts.getAllProductsWithSlug();
 
-//   return {
-//     paths: slugs.map(({ slug }) => ({
-//       params: {
-//         slug,
-//       },
-//     })),
-//     fallback: 'blocking',
-//   };
-// };
-// export const getStaticProps: GetStaticProps = async (ctx) => {
-//   const { slug } = ctx.params as { slug: string };
-//   const product = await dbProducts.getProductBySlug(slug);
-
-//   if (!product)
-//     return {
-//       redirect: {
-//         destination: '/',
-//         permanent: false,
-//       },
-//     };
-
-//   //else
-//   return {
-//     props: {
-//       product,
-//     },
-//     revalidate: 86400, //60*60*24 cada 24hs
-//   };
-// };
-
-//* SSR
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  return {
+    paths: slugs.map(({ slug }) => ({
+      params: {
+        slug
+      }
+    })),
+    fallback: 'blocking'
+  };
+};
+export const getStaticProps: GetStaticProps = async (ctx) => {
   const { slug } = ctx.params as { slug: string };
   const product = await dbProducts.getProductBySlug(slug);
 
   if (!product)
     return {
       redirect: {
-        destination: '/404',
+        destination: '/',
         permanent: false
       }
     };
 
+  //else
   return {
     props: {
       product
-    }
+    },
+    revalidate: 86400 //60*60*24 cada 24hs
   };
 };
+
+//* SSR
+// export const getServerSideProps: GetServerSideProps = async (ctx) => {
+//   const { slug } = ctx.params as { slug: string };
+//   const product = await dbProducts.getProductBySlug(slug);
+
+//   if (!product)
+//     return {
+//       redirect: {
+//         destination: '/404',
+//         permanent: false
+//       }
+//     };
+
+//   return {
+//     props: {
+//       product
+//     }
+//   };
+// };
 
 export default ProductPage;
 

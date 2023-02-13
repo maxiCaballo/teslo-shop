@@ -93,3 +93,9 @@ export default NextAuth({
 //session({session,token,user})--> Cuando se genere un nueva sesion que quiero hacer...
 //Acá el user existe pero dentro del objeto session, el user que desestructuro esta undefined si es
 //que eligió autenticacion de 3ros
+
+//Github
+//cliendId -> es un identificador único proporcionado por github para que la aplicación se pueda comunicar
+//con los servicios de API que otorga en este caso github.
+//clientSecret -> Tambíen es un identificador unico proporcionado en este caso por github para asegurar
+//la comunicación entre la app y el proveedor del servicio de autenticación.
