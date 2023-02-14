@@ -1,7 +1,9 @@
 import { FC, useContext } from 'react';
 import NextLink from 'next/link';
 import { CartContext } from '../../context/cart/CartContext';
-import { ICartProduct, IOrderItem } from '../../interfaces';
+// import { ICartProduct, IOrderItem } from '../../interfaces';
+import { ICartProduct } from '../../interfaces/Cart';
+import { IOrderItem } from '../../interfaces/Order';
 
 import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Grid, Link, Typography } from '@mui/material';
 import { ItemCounter } from '../ui';
@@ -54,7 +56,6 @@ export const CartList: FC<Props> = ({ editable = false, orderItems }) => {
                   </Typography>
 
                   {editable ? (
-                    //TODO agregar propiedades updatedQuantity y currentValue
                     <ItemCounter
                       currentValue={product.quantity}
                       updatedQuantity={(newValue) => onUpdateQuantity(product as ICartProduct, newValue)}
