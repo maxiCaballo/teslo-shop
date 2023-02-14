@@ -43,6 +43,7 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
     const backendTotal = Number(subTotal * (taxRate + 1));
 
+    console.log(frontendTotal.toFixed(2), backendTotal.toFixed(2));
     if (frontendTotal.toFixed(2) !== backendTotal.toFixed(2)) throw new Error('Total ammount not match ');
 
     //*Si llego hasta acá es que todo está bien...
@@ -59,7 +60,9 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     });
     //Redondeo el total
     newOrder.orderSummary.total = Math.round(newOrder.orderSummary.total * 100) / 100;
+    await db.connect();
     await newOrder.save();
+    await db.disconnect();
 
     return res.status(201).json({ newOrder });
   } catch (error) {

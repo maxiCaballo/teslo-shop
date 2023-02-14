@@ -17,8 +17,10 @@ type FormData = {
 };
 
 const LoginPage = () => {
-  const [errorMessage, setErrorMessage] = useState('');
+  const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState(router.query.error ?? '');
   const [loading, setLoading] = useState(false); //Para desabilitar el boton de login mientras esta cargando...
+  // const { login } = useContext(AuthContext);
 
   const [providers, setProviders] = useState<any>({});
   useEffect(() => {
@@ -26,10 +28,6 @@ const LoginPage = () => {
       setProviders(prov);
     });
   }, []);
-
-  // const { login } = useContext(AuthContext);
-
-  const router = useRouter();
   const destintation = router.query.p?.toString() || '/'; //Destino desde donde venia el usuario
 
   const {
@@ -41,7 +39,7 @@ const LoginPage = () => {
   const onUserLogin: SubmitHandler<FormData> = async ({ email, password }) => {
     //* Login personalizado sin next-auth
 
-    // setLoading(true);
+    setLoading(true);
     // const { ok, errorMessage } = await login(email, password);
     // setLoading(false);
     // if (!ok) {
@@ -53,8 +51,7 @@ const LoginPage = () => {
     // // sino viene con query redirecciono a la home
     // router.replace(destintation); //No uso un push para que no pueda retornar a la pagina anterior
 
-    //*Login con next-auth
-
+    //*Login con next-auth, el redirect se hace por el ssr que chequea si hay sesion activa
     await signIn('credentials', { email, password });
   };
 

@@ -28,7 +28,7 @@ const CheckoutSummaryPage = () => {
 
   const onCreateOrder = async () => {
     setIsSendOrder(true);
-    const { ok, orderId, errorMessage: message } = await createOrder(); //Todo verificar que hago si fue exitosa o no la creacion de la orden...
+    const { ok, orderId, errorMessage: message } = await createOrder();
 
     if (!ok) {
       setIsSendOrder(false);

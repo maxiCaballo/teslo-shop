@@ -14,7 +14,7 @@ export interface AuthState {
   user?: ILoggedUser;
 }
 
-type Response = {
+export type Response = {
   ok: boolean;
   errorMessage?: string;
   user?: ILoggedUser;
@@ -46,6 +46,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   // }, []);
 
   //*Methods
+  //Éste metodo lo uso para el login personalizado
   const login = async (email: string, password: string): Promise<Response> => {
     try {
       const { data } = await teslo_Api.post('/user/login', { email, password });
@@ -107,6 +108,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
       };
     }
   };
+  //*Metodo para login personalizado
   const checkToken = async () => {
     if (!Cookies.get('token')) return;
 

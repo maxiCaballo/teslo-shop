@@ -46,7 +46,6 @@ const ProductPage: NextPage<Props> = ({ product }) => {
     if (!tempProductCart.size) return; //Si el usuario no selecciona tamaño..
 
     const existInCart = cart.find(({ _id, size }) => size === tempProductCart.size && _id === tempProductCart._id);
-    console.log(existInCart);
 
     if (!existInCart) {
       addProduct(tempProductCart);
@@ -76,7 +75,7 @@ const ProductPage: NextPage<Props> = ({ product }) => {
               ${product.price}
             </Typography>
 
-            {/* Quantity */}
+            {/* Quantity - Size*/}
             <Box sx={{ my: 2 }}>
               <Typography variant='subtitle2'>Quantity</Typography>
               <ItemCounter currentValue={tempProductCart.quantity} updatedQuantity={updatedQuantity} />
@@ -103,7 +102,7 @@ const ProductPage: NextPage<Props> = ({ product }) => {
   );
 };
 
-//* SSG
+//* ISG -> porque se actualiza cada 24hs
 export const getStaticPaths: GetStaticPaths = async () => {
   const slugs = await dbProducts.getAllProductsWithSlug();
 
@@ -113,6 +112,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
         slug
       }
     })),
+    //Para que contemple productos que si estan en db pero no en filesystem se lo devuelve al usuario y en el
+    //proximo build genera la page estatica para que ya quede pronta para servir.
     fallback: 'blocking'
   };
 };

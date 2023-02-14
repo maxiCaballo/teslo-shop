@@ -22,10 +22,11 @@ export default NextAuth({
         email: { label: 'Email', type: 'email', placeholder: 'email@....' },
         password: { label: 'Password', type: 'password', placeholder: 'password...' }
       },
-      //Método que authoriza o no el usuario en funcion de sus credenciales
+      //Método que autoriza o no el usuario en funcion de sus credenciales
       async authorize(credentials): Promise<IUserNextAuth | null> {
         // Props: id, email, name son necesarias sinó tira error...
         const user = await dbUsers.checkUserEmailPassword(credentials!.email, credentials!.password);
+
         if (!user) return null;
 
         return user;
