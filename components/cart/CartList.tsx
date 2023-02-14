@@ -1,11 +1,10 @@
 import { FC, useContext } from 'react';
 import NextLink from 'next/link';
 import { CartContext } from '../../context/cart/CartContext';
-import { ICartProduct } from '../../interfaces';
+import { ICartProduct, IOrderItem } from '../../interfaces';
 
 import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Grid, Link, Typography } from '@mui/material';
 import { ItemCounter } from '../ui';
-import { IOrderItem } from '../../interfaces';
 
 interface Props {
   editable?: boolean;
