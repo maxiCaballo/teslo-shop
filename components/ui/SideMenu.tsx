@@ -25,7 +25,8 @@ import {
   LoginOutlined,
   MaleOutlined,
   SearchOutlined,
-  VpnKeyOutlined
+  VpnKeyOutlined,
+  DashboardOutlined
 } from '@mui/icons-material';
 
 type PanelListType = {
@@ -89,6 +90,12 @@ const userPanelListItem: PanelListType[] = [
 ];
 const adminPanelListItem: PanelListType[] = [
   {
+    icon: <DashboardOutlined />,
+    name: 'Dashboard',
+    pathname: '/admin',
+    isLoggedUserItem: true
+  },
+  {
     icon: <CategoryOutlined />,
     name: 'Products',
     pathname: '/404',
@@ -140,8 +147,8 @@ export const SideMenu = () => {
               value={search}
               type='text'
               placeholder='Search...'
-              onChange={e => setSearch(e.target.value)}
-              onKeyDown={e => (e.key === 'Enter' ? onSearch() : null)}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => (e.key === 'Enter' ? onSearch() : null)}
               endAdornment={
                 <InputAdornment position='end'>
                   <IconButton onClick={onSearch}>
@@ -152,7 +159,7 @@ export const SideMenu = () => {
             />
           </ListItem>
 
-          {userPanelListItem.map(item => {
+          {userPanelListItem.map((item) => {
             if (isLogged && item.isLoggedUserItem) {
               return (
                 <ListItem
@@ -196,7 +203,7 @@ export const SideMenu = () => {
 
           {isLogged &&
             user?.role === 'admin' &&
-            adminPanelListItem.map(item => (
+            adminPanelListItem.map((item) => (
               <ListItem key={item.name} sx={{ cursor: 'pointer' }} onClick={() => navigateTo(item.pathname)}>
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.name} />
