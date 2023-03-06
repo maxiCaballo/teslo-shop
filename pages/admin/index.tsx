@@ -50,7 +50,7 @@ const DashboardPage = () => {
           />
           <DashboardCard
             title='3'
-            subtitle='In inventory:'
+            subtitle='Low inventory:'
             icon={<ProductionQuantityLimitsOutlined color='warning' sx={{ fontSize: 40 }} />}
           />
 
