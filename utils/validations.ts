@@ -1,3 +1,5 @@
+import { ROLE_CONSTANTS } from '@/database/constants';
+
 export const isValidEmail = (email: string): boolean => {
   const match = String(email)
     .toLowerCase()
@@ -43,10 +45,6 @@ export const validateUser = (
   return validUser;
 };
 
-//*Roles
-const roles = ['client', 'admin'];
-const adminRoles = ['admin', 'SEO', 'super-user'];
-
 export const isAdminRole = (role: string) => {
-  return adminRoles.includes(role);
+  return ROLE_CONSTANTS.adminRoles.includes(role);
 };

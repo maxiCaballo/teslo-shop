@@ -37,9 +37,11 @@ const OrderPage: NextPage<Props> = ({ order }) => {
 
   const onOrderComplete = async (details: OrderResponseBody) => {
     if (details.status !== 'COMPLETED') return alert('Paypal error: We could not process your payment');
+
     setIsPaying(true);
+
     try {
-      const { data } = await tesloAPI.post('/order/pay', { transactionId: details.id, orderId: _id });
+      await tesloAPI.post('/order/pay', { transactionId: details.id, orderId: _id });
 
       //Como es ssr vuelve a hacer la solicitud de la orden al back y si esta pagada no me muestra los botones
       //de paypal sino un chip con el mensaje de que ya fue paga.

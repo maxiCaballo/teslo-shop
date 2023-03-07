@@ -110,7 +110,7 @@ const adminPanelListItem: PanelListType[] = [
   {
     icon: <AdminPanelSettings />,
     name: 'Users',
-    pathname: '/404',
+    pathname: '/admin/users',
     isLoggedUserItem: true
   }
 ];
