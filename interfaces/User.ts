@@ -24,4 +24,4 @@ export interface IUserNextAuth {
   role  : IRole;
 }
 
-export type IRole = 'client' | 'admin';
+export type IRole = 'client' | 'admin' | 'SEO' | 'super-user';

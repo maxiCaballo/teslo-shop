@@ -1,27 +1,15 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '@/database';
 import { Order, Product, User } from '@/models';
+import { IAdminDashboard } from '../../../interfaces';
 
-type Data =
-  | {
-      orders: {
-        total: number;
-        paid: number;
-        pending: number;
-      };
-      products: {
-        total: number;
-        outOfStock: number; // 0
-        lowInventory: number; // 10 o menos
-      };
-      totalClients: number; // role Client
-    }
-  | { message: string };
+type Data = IAdminDashboard | { message: string };
 
 export default function Handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   switch (req.method) {
     case 'GET':
       return getDashboardInfo(req, res);
+
     default:
       return res.status(400).json({ message: 'Http method error' });
   }

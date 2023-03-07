@@ -19,7 +19,7 @@ export const validateUser = (
 ): { isValidUser: boolean; errorMessage: string } => {
   const validUser = {
     isValidUser: true,
-    errorMessage: '',
+    errorMessage: ''
   };
 
   if (password.length < 6) {
@@ -41,4 +41,12 @@ export const validateUser = (
   }
 
   return validUser;
+};
+
+//*Roles
+const roles = ['client', 'admin'];
+const adminRoles = ['admin', 'SEO', 'super-user'];
+
+export const isAdminRole = (role: string) => {
+  return adminRoles.includes(role);
 };

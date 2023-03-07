@@ -92,7 +92,7 @@ const adminPanelListItem: PanelListType[] = [
   {
     icon: <DashboardOutlined />,
     name: 'Dashboard',
-    pathname: '/admin',
+    pathname: '/admin/dashboard',
     isLoggedUserItem: true
   },
   {
