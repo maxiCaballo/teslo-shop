@@ -104,7 +104,7 @@ const adminPanelListItem: PanelListType[] = [
   {
     icon: <ConfirmationNumberOutlined />,
     name: 'Orders',
-    pathname: '/404',
+    pathname: '/admin/orders',
     isLoggedUserItem: true
   },
   {

@@ -21,10 +21,9 @@ const UsersPage = () => {
 
   if (!data && !error) return <FullScreenSpinner />;
 
-  const onRollUpdated = async (userId: string, newRole: IRole) => {
+  const onRoleUpdated = async (userId: string, newRole: IRole) => {
     //*En este método opto por primero cambiar el estado para que sea mas rapido el cambio
-    //*por la experiencia de usuario luego hago el llamado a la API, en caso de falla seteo
-    //*el estado a como estaba antes.
+    //* en la ui luego hago el llamado a la API, en caso de falla seteo el estado a como estaba antes.
 
     const previousUsers = [...users];
     const updatedUsers = users.map((user) => ({
@@ -39,6 +38,11 @@ const UsersPage = () => {
         userId,
         role: newRole
       });
+
+      //*Esta es otra opcion sin usar estados ni useEffect pero hay un leve retardo en ver el cambio
+      //*en la ui, basicamente vuelvo a hacer una llamada al endpoint para que repinte todo porque se
+      //*que a esta altura tuvo exito la petición
+      //mutate('/api/admin/users')
     } catch (error) {
       setUsers(previousUsers);
       alert('There was an error updated the user!');
@@ -59,7 +63,7 @@ const UsersPage = () => {
           <Select
             value={params.row.role}
             label='Role'
-            onChange={(e) => onRollUpdated(params.row.id, e.target.value)}
+            onChange={(e) => onRoleUpdated(params.row.id, e.target.value)}
             sx={{ width: '300px' }}
           >
             <MenuItem value='admin'>Admin</MenuItem>
@@ -80,13 +84,11 @@ const UsersPage = () => {
 
   return (
     <AdminLayout title='Users' subtitle='Users maintenance' icon={<PeopleOutline />}>
-      <>
-        <Grid container className='fadeIn'>
-          <Grid item xs={12} sx={{ height: 650, width: '100%' }}>
-            <DataGrid rows={rows} columns={columns} pageSize={10} rowsPerPageOptions={[10]}></DataGrid>
-          </Grid>
+      <Grid container className='fadeIn'>
+        <Grid item xs={12} sx={{ height: 650, width: '100%' }}>
+          <DataGrid rows={rows} columns={columns} pageSize={10} rowsPerPageOptions={[10]}></DataGrid>
         </Grid>
-      </>
+      </Grid>
     </AdminLayout>
   );
 };
