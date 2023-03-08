@@ -20,47 +20,48 @@ export async function middleware(req: NextRequest, res: NextResponse, event: Nex
   const path = req.nextUrl.pathname;
 
   //* Logica para rutas Api Admin
-  if (path.includes('/api/admin/')) {
-    if (!session) {
-      return new Response(JSON.stringify({ message: 'Not authorized' }), {
-        status: 401,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-    }
+  // if (path.includes('/api/admin/')) {
+  //   if (!session) {
+  //     return new Response(JSON.stringify({ message: 'Not authorized' }), {
+  //       status: 401,
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       }
+  //     });
+  //   }
 
-    if (!adminRoles.includes(session.user.role)) {
-      const url = redirectToUrl(req.nextUrl, '/');
-      return NextResponse.redirect(url);
-    }
-  }
+  //   if (!adminRoles.includes(session.user.role)) {
+  //     const url = redirectToUrl(req.nextUrl, '/');
+  //     return NextResponse.redirect(url);
+  //   }
+  // }
 
-  const cart = JSON.parse(req.cookies.get('cart')?.value!); //Desde el front siempre voy a mandar un array
+  // const cart = JSON.parse(req.cookies.get('cart')?.value!); //Desde el front siempre voy a mandar un array
+  // const cart = [];
 
-  //Si no tiene session lo redirecciono al login si es que quiere entrar a esas rutas..
-  if (!session) {
-    const requestdPage = req.nextUrl.pathname; // /checkout/address o /checkout/summary
-    const url = redirectToUrl(req.nextUrl, '/auth/login'); //objeto con diferente info...
-    url.search = `p=${requestdPage}`; // query
-    return NextResponse.redirect(url);
-  }
+  // //Si no tiene session lo redirecciono al login si es que quiere entrar a esas rutas..
+  // if (!session) {
+  //   const requestdPage = req.nextUrl.pathname; // /checkout/address o /checkout/summary
+  //   const url = redirectToUrl(req.nextUrl, '/auth/login'); //objeto con diferente info...
+  //   url.search = `p=${requestdPage}`; // query
+  //   return NextResponse.redirect(url);
+  // }
 
-  //*Logica para rutas admin
-  if (path.startsWith('/admin/')) {
-    if (!adminRoles.includes(session.user.role)) {
-      const url = redirectToUrl(req.nextUrl, '/');
-      return NextResponse.redirect(url);
-    }
-  }
+  // //*Logica para rutas admin
+  // if (path.startsWith('/admin/')) {
+  //   if (!adminRoles.includes(session.user.role)) {
+  //     const url = redirectToUrl(req.nextUrl, '/');
+  //     return NextResponse.redirect(url);
+  //   }
+  // }
 
-  //*Logica para rutas client
-  if (path.includes('/summary')) {
-    if (cart.length === 0) {
-      const url = redirectToUrl(req.nextUrl, '/');
-      return NextResponse.redirect(url);
-    }
-  }
+  // //*Logica para rutas client
+  // if (path.includes('/summary')) {
+  //   if (cart.length === 0) {
+  //     const url = redirectToUrl(req.nextUrl, '/');
+  //     return NextResponse.redirect(url);
+  //   }
+  // }
 
   return NextResponse.next();
 }

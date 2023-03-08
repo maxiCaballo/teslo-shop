@@ -50,7 +50,7 @@ const OrdersPage = () => {
     name: (user as IUser).name,
     total,
     status: isPaid,
-    createdAt: convert_to_DD_MM_YYYY(createdAt)
+    createdAt: convert_to_DD_MM_YYYY(createdAt!)
   }));
 
   return (

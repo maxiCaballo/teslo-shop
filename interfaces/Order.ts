@@ -10,7 +10,7 @@ export interface IOrder {
   orderSummary   : IOrderSummary;
   isPaid         : boolean;
   paidAt?        : string;
-  createdAt      : string;
+  createdAt?     : string;
   transactionId? : string;
 
 }
