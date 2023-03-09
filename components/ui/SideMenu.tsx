@@ -98,19 +98,19 @@ const adminPanelListItem: PanelListType[] = [
   {
     icon: <CategoryOutlined />,
     name: 'Products',
-    pathname: '/404',
+    pathname: '/admin/product',
     isLoggedUserItem: true
   },
   {
     icon: <ConfirmationNumberOutlined />,
     name: 'Orders',
-    pathname: '/admin/orders',
+    pathname: '/admin/order',
     isLoggedUserItem: true
   },
   {
     icon: <AdminPanelSettings />,
     name: 'Users',
-    pathname: '/admin/users',
+    pathname: '/admin/user',
     isLoggedUserItem: true
   }
 ];

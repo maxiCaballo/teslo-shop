@@ -1,12 +1,15 @@
+import NextLink from 'next/link';
 import { AdminLayout } from '@/components/layouts';
 import useSWR from 'swr';
-import { IProduct } from '../../interfaces/Products';
+import { IProduct } from '../../../interfaces/Products';
 
 import { CategoryOutlined } from '@mui/icons-material';
-import { CardMedia, Grid } from '@mui/material';
+import { CardMedia, Grid, Link } from '@mui/material';
 import { GridColDef, DataGrid, GridRenderCellParams } from '@mui/x-data-grid';
 import { FullScreenSpinner } from '@/components/ui';
 
+//*Cuando hago click en la imagen me lleva a la page de producto y cuando hago click en el titulo
+//*me lleva al edit del product...
 const columns: GridColDef[] = [
   {
     field: 'image',
@@ -19,7 +22,18 @@ const columns: GridColDef[] = [
       );
     }
   },
-  { field: 'title', headerName: 'Title', width: 250 },
+  {
+    field: 'title',
+    headerName: 'Title',
+    width: 270,
+    renderCell({ row }: GridRenderCellParams) {
+      return (
+        <NextLink href={`/admin/product/${row.slug}`} passHref legacyBehavior>
+          <Link underline='always'>{row.title}</Link>
+        </NextLink>
+      );
+    }
+  },
   { field: 'gender', headerName: 'Gender' },
   { field: 'type', headerName: 'Type' },
   { field: 'inStock', headerName: 'Stock' },
