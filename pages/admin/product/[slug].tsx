@@ -2,12 +2,15 @@ import React, { FC, useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { teslo_Api } from '@/api';
 import * as yup from 'yup';
 
 import { AdminLayout } from '../../../components/layouts';
 import { IGender, IProduct, ISize, ITypes } from '../../../interfaces';
-import { DriveFileRenameOutline, SaveOutlined, UploadOutlined } from '@mui/icons-material';
 import { dbProducts } from '../../../database';
+import { Subscription } from 'react-hook-form/dist/utils/createSubject';
+import { convert_to_teslo_slug } from '@/utils';
+import { DriveFileRenameOutline, SaveOutlined, UploadOutlined } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -29,8 +32,6 @@ import {
   RadioGroup,
   TextField
 } from '@mui/material';
-import { Subscription } from 'react-hook-form/dist/utils/createSubject';
-import { convert_to_teslo_slug } from '@/utils';
 
 const validTypes: ITypes[] = ['shirts', 'pants', 'hoodies', 'hats'];
 const validGender: IGender[] = ['men', 'women', 'kid', 'unisex'];
@@ -60,27 +61,25 @@ const FormSchema = yup.object().shape({
   inStock: yup.number().typeError('Please enter a valid number').required('Required field').min(0, 'Min value 0'),
   price: yup.number().typeError('Please enter a valid number').required('Required field').min(0, 'Min value 0'),
   slug: yup.string().required('Required field').matches(/^\S+$/, `Can't contain an empty space`)
-  //   tags: yup.string()
-  // type:,
-  // gender:,
 });
 
 const ProductAdminPage: FC<Props> = ({ product }) => {
   const [tagInputValue, setTagInputValue] = useState<string>('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-    getValues, //*Puedo obtener el valor de los campos actuales del form
-    setValue //*No renderiza el componente a menos que se lo especifique
+    getValues, //Puedo obtener el valor de los campos actuales del form
+    setValue //No renderiza el componente a menos que se lo especifique
   } = useForm<FormData>({
     defaultValues: product,
     resolver: yupResolver(FormSchema)
   });
 
-  //*Efecto para cambiar el input slug en función del title
+  //Efecto para cambiar el input slug en función del title
   useEffect(() => {
     const subscription: Subscription = watch((value, { name }) => {
       if (name === 'title') {
@@ -92,7 +91,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     return () => subscription.unsubscribe();
   }, [watch, setValue]);
 
-  //*Efecto para añadir tag al producto
+  //Efecto para añadir tag al producto
   useEffect(() => {
     if (tagInputValue[tagInputValue.length - 1] === ' ') {
       onNewTag();
@@ -101,7 +100,24 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagInputValue]);
 
-  const onSubmit = (form: FormData) => {
+  const onSubmit = async (form: FormData) => {
+    if (form.images.length < 2) return alert('At least 2 images are required');
+    setIsSaving(true);
+
+    try {
+      const { data } = await teslo_Api({
+        url: '/admin/products',
+        method: 'PUT', //Si tenemos _id PUT sino POST
+        data: form
+      });
+
+      console.log({ data });
+      setIsSaving(false);
+    } catch (error) {
+      console.log(error);
+      setIsSaving(false);
+    }
+
     console.log(form);
   };
 
@@ -120,7 +136,6 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     if (tagInputValue === ' ' || tagInputValue === '') return;
 
     const newTag = tagInputValue.trim().toLocaleLowerCase();
-    console.log(newTag);
     setTagInputValue('');
 
     const currentTags = Array.from(getValues('tags'));
@@ -129,6 +144,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     const newTags = Array.from(new Set(currentTags));
     setValue('tags', newTags, { shouldValidate: true });
   };
+
   const onDeleteTag = (tag: string) => {
     const newTags = getValues('tags').filter((item) => item !== tag);
     setValue('tags', newTags, { shouldValidate: true });
@@ -138,7 +154,13 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     <AdminLayout title={'Product'} subtitle={`Editing: ${product.title}`} icon={<DriveFileRenameOutline />}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box display='flex' justifyContent='end' sx={{ mb: 1 }}>
-          <Button color='secondary' startIcon={<SaveOutlined />} sx={{ width: '150px' }} type='submit'>
+          <Button
+            color='secondary'
+            startIcon={<SaveOutlined />}
+            sx={{ width: '150px' }}
+            type='submit'
+            disabled={isSaving}
+          >
             Save
           </Button>
         </Box>

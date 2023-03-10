@@ -1,7 +1,8 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 
+import tesloAPI from '@/api/tesloApi';
 import { CartContext } from '../../context/cart/CartContext';
 import { Box, Button, Grid, Typography, Chip } from '@mui/material';
 import { ShopLayout } from '../../components/layouts';
@@ -15,16 +16,35 @@ type Props = {
 };
 
 const ProductPage: NextPage<Props> = ({ product }) => {
+  const [ssrPrice, setSsrPrice] = useState(product.price);
   const [tempProductCart, setTempProductCart] = useState<ICartProduct>({
     _id: product._id,
     images: product.images,
-    price: product.price,
+    price: ssrPrice,
     size: undefined,
     slug: product.slug,
     title: product.title,
     gender: product.gender,
     quantity: 1
   });
+  useEffect(() => {
+    console.log(product.price);
+    console.log(product._id);
+
+    const getProductPriceSSR = async () => {
+      try {
+        const {
+          data: { price }
+        } = await tesloAPI.get(`/products/price/${product._id}`);
+
+        setSsrPrice(price);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    console.log(product.price);
+    getProductPriceSSR();
+  }, []);
 
   const router = useRouter();
   const { cart, addProduct, updateProductCart } = useContext(CartContext);
@@ -72,7 +92,7 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 
             {/* Price */}
             <Typography variant='subtitle1' component='h2'>
-              ${product.price}
+              ${ssrPrice}
             </Typography>
 
             {/* Quantity - Size*/}
