@@ -3,8 +3,8 @@ import { AdminLayout } from '@/components/layouts';
 import useSWR from 'swr';
 import { IProduct } from '../../../interfaces/Products';
 
-import { CategoryOutlined } from '@mui/icons-material';
-import { CardMedia, Grid, Link } from '@mui/material';
+import { AddOutlined, CategoryOutlined } from '@mui/icons-material';
+import { Box, Button, CardMedia, Grid, Link } from '@mui/material';
 import { GridColDef, DataGrid, GridRenderCellParams } from '@mui/x-data-grid';
 import { FullScreenSpinner } from '@/components/ui';
 
@@ -60,11 +60,18 @@ const ProductPage = () => {
 
   return (
     <AdminLayout title={`Products (${data!.length})`} subtitle='Products maintenance' icon={<CategoryOutlined />}>
-      <Grid container className='fadeIn'>
-        <Grid item xs={12} sx={{ height: 650, width: '100%' }}>
-          <DataGrid rows={rows} columns={columns} pageSize={10} rowsPerPageOptions={[10]}></DataGrid>
+      <>
+        <Box display='flex' justifyContent='end' sx={{ mb: 2 }}>
+          <Button startIcon={<AddOutlined />} color='secondary' href='/admin/product/new'>
+            Create
+          </Button>
+        </Box>
+        <Grid container className='fadeIn'>
+          <Grid item xs={12} sx={{ height: 650, width: '100%' }}>
+            <DataGrid rows={rows} columns={columns} pageSize={10} rowsPerPageOptions={[10]}></DataGrid>
+          </Grid>
         </Grid>
-      </Grid>
+      </>
     </AdminLayout>
   );
 };

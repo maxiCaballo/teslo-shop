@@ -31,10 +31,35 @@ const getProducts = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   return res.status(200).json(products);
 };
 
-const createProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) => {};
+const createProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+  const { images = [], slug } = req.body as IProduct;
+
+  if (images.length < 2) return res.status(400).json({ message: 'Product need at least 2 images' });
+
+  try {
+    await db.connect();
+    const alreadyExist = await Product.findOne({ slug });
+
+    if (alreadyExist) {
+      await db.disconnect();
+      return res.status(400).json({ message: 'The is a product with slug: ' + slug });
+    }
+
+    const product = new Product(req.body);
+    await product.save();
+    await db.disconnect();
+
+    return res.status(201).json(product);
+  } catch (error) {
+    console.log(error);
+
+    await db.disconnect();
+    return res.status(400).json({ message: 'There was an error creating the product' });
+  }
+};
 
 const updateProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-  const { _id = '', images = [] } = req.body;
+  const { _id = '', images = [] } = req.body as IProduct;
 
   if (!isValidObjectId(_id)) return res.status(404).json({ message: 'MongoId error' });
 

@@ -1,9 +1,12 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useEffect, useRef, useState } from 'react';
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
+import { Product } from '@/models';
+
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { teslo_Api } from '@/api';
 import * as yup from 'yup';
+import { teslo_Api } from '@/api';
 
 import { AdminLayout } from '../../../components/layouts';
 import { IGender, IProduct, ISize, ITypes } from '../../../interfaces';
@@ -66,6 +69,8 @@ const FormSchema = yup.object().shape({
 const ProductAdminPage: FC<Props> = ({ product }) => {
   const [tagInputValue, setTagInputValue] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
+  const inputUploadImageRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const {
     register,
@@ -107,18 +112,19 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     try {
       const { data } = await teslo_Api({
         url: '/admin/products',
-        method: 'PUT', //Si tenemos _id PUT sino POST
+        method: form._id ? 'PUT' : 'POST', //Si tenemos _id PUT sino POST
         data: form
       });
 
-      console.log({ data });
-      setIsSaving(false);
+      if (!form._id) {
+        router.replace('/admin/products');
+      } else {
+        setIsSaving(false);
+      }
     } catch (error) {
       console.log(error);
       setIsSaving(false);
     }
-
-    console.log(form);
   };
 
   const onChangeSize = (size: ISize) => {
@@ -148,6 +154,18 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
   const onDeleteTag = (tag: string) => {
     const newTags = getValues('tags').filter((item) => item !== tag);
     setValue('tags', newTags, { shouldValidate: true });
+  };
+  const onImageSelected = async ({ target }: ChangeEvent<HTMLInputElement>) => {
+    if (!target.files || !target.files.length) return;
+
+    try {
+      for (const file of target.files) {
+        const formData = new FormData();
+        formData.append('images', file);
+        const { data } = await teslo_Api.post<{ message: string }>('/admin/upload', formData);
+        console.log(data);
+      }
+    } catch (error) {}
   };
 
   return (
@@ -322,9 +340,23 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
 
             <Box display='flex' flexDirection='column'>
               <FormLabel sx={{ mb: 1 }}>Images</FormLabel>
-              <Button color='secondary' fullWidth startIcon={<UploadOutlined />} sx={{ mb: 3 }}>
+              <Button
+                color='secondary'
+                fullWidth
+                startIcon={<UploadOutlined />}
+                sx={{ mb: 3 }}
+                onClick={() => inputUploadImageRef.current?.click()} //Simulo que le doy click al input de abajo
+              >
                 Upload image
               </Button>
+              <input
+                ref={inputUploadImageRef}
+                type='file'
+                multiple
+                accept='image/png, image/gif, image/jpeg'
+                style={{ display: 'none' }} //No se ve
+                onChange={onImageSelected}
+              />
 
               <Chip label='Almost 2 images' color='error' variant='outlined' sx={{ mb: 3 }} />
 
@@ -356,7 +388,17 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { slug = '' } = query;
 
-  const product = await dbProducts.getProductBySlug(slug.toString());
+  let product: IProduct | null;
+
+  if (slug === 'new') {
+    const temporalProduct = JSON.parse(JSON.stringify(new Product()));
+    delete temporalProduct._id;
+    temporalProduct.images = ['image1.jpg', 'image2.jpg'];
+
+    product = temporalProduct;
+  } else {
+    product = await dbProducts.getProductBySlug(slug.toString());
+  }
 
   if (!product) {
     return {

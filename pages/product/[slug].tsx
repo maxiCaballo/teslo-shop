@@ -44,6 +44,7 @@ const ProductPage: NextPage<Props> = ({ product }) => {
     };
     console.log(product.price);
     getProductPriceSSR();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const router = useRouter();
