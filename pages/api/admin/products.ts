@@ -4,6 +4,9 @@ import { db } from '@/database';
 import { IProduct } from '../../../interfaces/Products';
 import { isValidObjectId } from 'mongoose';
 
+import { v2 as cloudinary } from 'cloudinary';
+cloudinary.config(process.env.CLOUDINARY_URL || '');
+
 type Data = { message: string } | IProduct | IProduct[];
 
 export default function Handler(req: NextApiRequest, res: NextApiResponse<Data>) {
@@ -74,7 +77,16 @@ const updateProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) =>
       return res.status(404).json({ message: 'There is no product with id: ' + _id });
     }
 
-    //TODO: eliminar fotos en cloudinary
+    //eliminar fotos en cloudinary
+    //Si existe una imagen en el dbProduct.image que no este en el req.body.image la borro de cloudinary
+    product.images.forEach(async (DBimage) => {
+      if (!images.includes(DBimage)) {
+        const [imageId, extension] = DBimage.substring(DBimage.lastIndexOf('/') + 1).split('.');
+        console.log(imageId);
+        await cloudinary.uploader.destroy(imageId);
+      }
+    });
+
     //Si hay alguna propiedad que no coincida o no exista en el modelo da error
     await product.update(req.body);
     await db.disconnect();

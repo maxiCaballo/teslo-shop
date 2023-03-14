@@ -162,10 +162,17 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
       for (const file of target.files) {
         const formData = new FormData();
         formData.append('images', file);
+
+        //El api me retorina el cloudinaryURL de la imagen.
         const { data } = await teslo_Api.post<{ message: string }>('/admin/upload', formData);
-        console.log(data);
+        setValue('images', [...getValues('images'), data.message], { shouldValidate: true });
       }
     } catch (error) {}
+  };
+
+  const onDeleteImage = (imageToDelete: string) => {
+    const newImages = getValues('images').filter((image) => image !== imageToDelete);
+    setValue('images', newImages, { shouldValidate: true });
   };
 
   return (
@@ -361,12 +368,13 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
               <Chip label='Almost 2 images' color='error' variant='outlined' sx={{ mb: 3 }} />
 
               <Grid container spacing={2}>
-                {product.images.map((img) => (
+                {getValues('images').map((img) => (
                   <Grid item xs={4} sm={3} key={img}>
                     <Card>
+                      {/*Conflicto entre el path de las imgs que estan en public y las de cloudinary*/}
                       <CardMedia component='img' className='fadeIn' image={`/products/${img}`} alt={img} />
                       <CardActions>
-                        <Button fullWidth color='error'>
+                        <Button fullWidth color='error' onClick={() => onDeleteImage(img)}>
                           Delete
                         </Button>
                       </CardActions>

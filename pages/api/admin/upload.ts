@@ -40,8 +40,6 @@ const parseFiles = async (req: NextApiRequest): Promise<string> => {
     const form = new formidable.IncomingForm();
 
     form.parse(req, async (err, fields, files) => {
-      console.log({ err, fields, files });
-
       if (err) return reject(err);
 
       const cloudinaryFilePath = await saveFile(files.images as formidable.File);
