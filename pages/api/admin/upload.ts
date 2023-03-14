@@ -25,13 +25,13 @@ export default function Handler(req: NextApiRequest, res: NextApiResponse<Data>)
 }
 
 const saveFile = async (file: formidable.File): Promise<string> => {
-  //!Para guardarlo en FileSystem, no se debería hacer.
+  //!Para guardarlo en FileSystem, no se debe hacer.
   //   const data = fs.readFileSync(file.filepath); //Path temporal que se le asigna al archivo mientras no se guarda
   //   fs.writeFileSync(`./public/${file.originalFilename}`, data); //Donde lo quiero guardar, con que nombre y que quiero guardar
   //   fs.unlinkSync(file.filepath); //Borro el path temporal que se le asignó para que no se junte mucha basura
   //   return;
 
-  const data = await cloudinary.uploader.upload(file.filepath);
+  const data = await cloudinary.uploader.upload(file.filepath, { folder: 'teslo-shop' });
   return data.secure_url;
 };
 

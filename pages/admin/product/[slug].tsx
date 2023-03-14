@@ -365,14 +365,18 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
                 onChange={onImageSelected}
               />
 
-              <Chip label='Almost 2 images' color='error' variant='outlined' sx={{ mb: 3 }} />
+              <Chip
+                label='Almost 2 images'
+                color='error'
+                variant='outlined'
+                sx={{ mb: 3, display: getValues('images').length < 2 ? 'flex' : 'none' }}
+              />
 
               <Grid container spacing={2}>
                 {getValues('images').map((img) => (
                   <Grid item xs={4} sm={3} key={img}>
                     <Card>
-                      {/*Conflicto entre el path de las imgs que estan en public y las de cloudinary*/}
-                      <CardMedia component='img' className='fadeIn' image={`/products/${img}`} alt={img} />
+                      <CardMedia component='img' className='fadeIn' image={img} alt={img} />
                       <CardActions>
                         <Button fullWidth color='error' onClick={() => onDeleteImage(img)}>
                           Delete

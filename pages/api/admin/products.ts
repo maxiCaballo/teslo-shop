@@ -82,8 +82,7 @@ const updateProduct = async (req: NextApiRequest, res: NextApiResponse<Data>) =>
     product.images.forEach(async (DBimage) => {
       if (!images.includes(DBimage)) {
         const [imageId, extension] = DBimage.substring(DBimage.lastIndexOf('/') + 1).split('.');
-        console.log(imageId);
-        await cloudinary.uploader.destroy(imageId);
+        await cloudinary.uploader.destroy(`teslo-shop/${imageId}`);
       }
     });
 
